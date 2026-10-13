@@ -1,0 +1,121 @@
+---
+import '../styles/global.css';
+import { Font } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BottomBar from '../components/BottomBar.astro';
+import Cotizador from '../components/Cotizador.astro';
+import IconSprite from '../components/IconSprite.astro';
+import { SITE } from '../lib/site';
+import { graph, organization, website, webPage } from '../lib/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Imagen OG absoluta o ruta pública */
+  ogImage?: string;
+  ogType?: 'website' | 'article' | 'product';
+  noindex?: boolean;
+  /** Nodos JSON-LD adicionales (el grafo base ya incluye Organization/LocalBusiness, WebSite y WebPage) */
+  schema?: object[];
+  pageType?: string;
+  /** Modelo de contexto para la barra inferior de WhatsApp */
+  model?: string;
+  /** Imagen LCP a precargar */
+  preloadImage?: { src: string; srcset?: string; sizes?: string };
+}
+
+const { title, description, ogImage = '/og/default.jpg', ogType = 'website', noindex = false, schema = [], pageType, model, preloadImage } = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', SITE.url).toString();
+const ogUrl = new URL(ogImage, SITE.url).toString();
+const fullTitle = title.includes('Vexon') ? title : `${title} | Vexon`;
+const ld = graph(organization(), website(), webPage({ url: canonical, title: fullTitle, description, type: pageType }), ...schema);
+const gaId = import.meta.env.PUBLIC_GA_ID;
+const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
+---
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'} />
+    <meta name="theme-color" content="#0f0f10" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="alternate" type="application/rss+xml" title="Blog de Vexon" href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta name="geo.region" content="MX-JAL" />
+    <meta name="geo.placename" content="Zapopan, Jalisco" />
+    <meta name="geo.position" content={`${SITE.geo.lat};${SITE.geo.lng}`} />
+    <meta name="ICBM" content={`${SITE.geo.lat}, ${SITE.geo.lng}`} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    <Font cssVariable="--font-kanit" preload={[{ weight: 700 }]} />
+    <Font cssVariable="--font-roboto" />
+    {preloadImage && (
+      <link rel="preload" as="image" href={preloadImage.src} imagesrcset={preloadImage.srcset} imagesizes={preloadImage.sizes} fetchpriority="high" />
+    )}
+
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+    <script type="speculationrules" set:html={JSON.stringify({ prerender: [{ where: { href_matches: '/*' }, eagerness: 'moderate' }] })} />
+    <slot name="head" />
+  </head>
+  <body>
+    <IconSprite />
+    <Header />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer />
+    <BottomBar model={model} />
+    <Cotizador />
+
+    <script define:vars={{ gaId, clarityId }}>
+      // Medición de conversiones y carga diferida de analítica (no afecta PageSpeed).
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.vxTrack = function (name, params) {
+        window.gtag('event', name, params || {});
+      };
+      let loaded = false;
+      function loadAnalytics() {
+        if (loaded) return; loaded = true;
+        if (gaId) {
+          const s = document.createElement('script');
+          s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+          document.head.appendChild(s);
+          window.gtag('js', new Date()); window.gtag('config', gaId);
+        }
+        if (clarityId) {
+          (function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); }; t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, 'clarity', 'script', clarityId);
+        }
+      }
+      ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((ev) => addEventListener(ev, loadAnalytics, { once: true, passive: true }));
+      setTimeout(loadAnalytics, 6000);
+    </script>
+    <script>
+      import { initUI } from '../lib/ui';
+      initUI();
+    </script>
+  </body>
+</html>

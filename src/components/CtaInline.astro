@@ -1,0 +1,14 @@
+---
+/** CTA dentro de los artículos del blog (a mitad del texto). */
+import Icon from './Icon.astro';
+import { buildWhatsAppLink, type WhatsAppContext } from '../lib/whatsapp';
+interface Props extends WhatsAppContext { title?: string; text?: string; label?: string }
+const { title = '¿Necesitas una oficina para tu obra?', text: body = 'Dinos cuántas personas trabajarán y dónde está tu obra. Te recomendamos el modelo y te mandamos la cotización.', label = 'Cotizar por WhatsApp', ...ctx } = Astro.props;
+---
+<aside class="not-prose my-10 overflow-hidden rounded-2xl bg-vx-black text-white">
+  <div class="hatch-dark p-6 sm:p-7">
+    <p class="font-display text-2xl text-white">{title}</p>
+    <p class="mt-2 text-white/75">{body}</p>
+    <a href={buildWhatsAppLink(ctx)} target="_blank" rel="noopener" class="btn btn-wa mt-5 !no-underline" data-wa data-block="blog-inline" data-model={ctx.model}><Icon name="whatsapp" class="btn-icon" /> {label}</a>
+  </div>
+</aside>

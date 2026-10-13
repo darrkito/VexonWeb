@@ -1,0 +1,76 @@
+---
+/**
+ * Render con puntos numerados (misma numeración de las fichas técnicas).
+ * Tocar un punto resalta su elemento en la lista; la lista siempre está visible (todo a la mano).
+ */
+import { Picture } from 'astro:assets';
+import { EQUIPAMIENTO, type Modelo } from '../data/modelos';
+interface Props { m: Modelo; id: string; showExtras?: boolean }
+const { m, id, showExtras = true } = Astro.props;
+const visibles = new Set(m.hotspots.map((h) => h.n));
+const items = EQUIPAMIENTO.filter((e) => showExtras || !e.adicional);
+---
+<div class="hotspots grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:items-center" data-hotspots={id}>
+  <div class="relative">
+    <div class="hatch absolute inset-x-8 bottom-6 top-10 rounded-3xl opacity-40" aria-hidden="true"></div>
+    <div class="relative">
+      <Picture
+        src={m.image}
+        formats={['avif']} fallbackFormat="webp"
+        widths={[480, 760, 1100]}
+        sizes="(min-width: 1024px) 640px, 92vw"
+        alt={`Oficina móvil ${m.code} con su equipamiento numerado`}
+        class="h-auto w-full"
+        loading="lazy"
+      />
+      {m.hotspots.map((h) => {
+        const eq = EQUIPAMIENTO.find((e) => e.n === h.n)!;
+        return (
+          <button
+            type="button"
+            class="hs-pin pin pulse absolute -translate-x-1/2 -translate-y-1/2 shadow-md"
+            style={`left:${h.x}%;top:${h.y}%`}
+            data-n={h.n}
+            aria-label={`${h.n}. ${eq.nombre}`}
+            aria-controls={`${id}-eq-${h.n}`}
+          >{h.n}</button>
+        );
+      })}
+    </div>
+  </div>
+  <ol class="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-1">
+    {items.map((e) => (
+      <li id={`${id}-eq-${e.n}`} class="hs-item flex gap-3 rounded-xl px-3 py-2.5 transition-colors" data-n={e.n}>
+        <span class:list={['pin', !visibles.has(e.n) && '!bg-vx-black']} aria-hidden="true">{e.n}</span>
+        <span>
+          <span class="block font-display text-[1.05rem] text-vx-black">{e.nombre}{e.adicional && <span class="ml-2 rounded-full bg-vx-sand px-2 py-0.5 align-middle text-[0.7rem] text-vx-slate">equipo adicional</span>}</span>
+          <span class="block text-[0.95rem] leading-snug text-vx-slate">{e.detalle}</span>
+        </span>
+      </li>
+    ))}
+  </ol>
+</div>
+<style>
+  .hs-pin { width: 1.9rem; height: 1.9rem; font-size: 0.85rem; cursor: pointer; }
+  .hs-pin:hover, .hs-pin.is-active { background: var(--color-vx-black); }
+  .hs-item.is-active { background: var(--color-vx-orange-soft); }
+</style>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-hotspots]').forEach((root) => {
+    const pins = root.querySelectorAll<HTMLButtonElement>('.hs-pin');
+    const items = root.querySelectorAll<HTMLElement>('.hs-item');
+    const activate = (n: string, scroll: boolean) => {
+      pins.forEach((p) => p.classList.toggle('is-active', p.dataset.n === n));
+      items.forEach((it) => {
+        const on = it.dataset.n === n;
+        it.classList.toggle('is-active', on);
+        if (on && scroll && window.innerWidth < 1024) it.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    };
+    pins.forEach((p) => {
+      p.addEventListener('click', () => activate(p.dataset.n!, true));
+      p.addEventListener('mouseenter', () => activate(p.dataset.n!, false));
+    });
+    items.forEach((it) => it.addEventListener('mouseenter', () => activate(it.dataset.n!, false)));
+  });
+</script>

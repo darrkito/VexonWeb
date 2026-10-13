@@ -1,0 +1,48 @@
+---
+import Icon from './Icon.astro';
+import { SITE, fullAddress } from '../lib/site';
+import { MODELOS } from '../data/modelos';
+import { buildWhatsAppLink, telLink } from '../lib/whatsapp';
+const year = new Date().getFullYear();
+---
+<footer class="bg-vx-black pb-28 pt-16 text-white/80 lg:pb-12">
+  <div class="wrap grid gap-12 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
+    <div>
+      <img src="/brand/vexon-logo-white.svg" alt="Vexon by Capelton" width="192" height="43" class="h-10 w-auto" loading="lazy" decoding="async" />
+      <p class="mt-5 max-w-xs text-[0.98rem]">Renta de oficinas móviles para obra, remodelación e industria en Guadalajara y su zona metropolitana.</p>
+      <a href={buildWhatsAppLink()} target="_blank" rel="noopener" class="btn btn-wa mt-6" data-wa data-block="footer"><Icon name="whatsapp" class="btn-icon" /> Cotizar por WhatsApp</a>
+    </div>
+    <div>
+      <h2 class="font-display text-lg font-medium text-white">Modelos</h2>
+      <ul class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-[0.98rem]">
+        {MODELOS.map((m) => <li><a href={`/oficinas-moviles/${m.slug}`} class="hover:text-white">{m.code}</a></li>)}
+      </ul>
+      <a href="/oficinas-moviles" class="mt-4 inline-block text-[0.98rem] text-white underline underline-offset-4">Comparar todos</a>
+    </div>
+    <div>
+      <h2 class="font-display text-lg font-medium text-white">Empresa</h2>
+      <ul class="mt-4 grid gap-2 text-[0.98rem]">
+        <li><a href="/soluciones/constructoras" class="hover:text-white">Para constructoras</a></li>
+        <li><a href="/soluciones/remodelaciones" class="hover:text-white">Para remodelaciones</a></li>
+        <li><a href="/soluciones/naves-e-industria" class="hover:text-white">Para naves e industria</a></li>
+        <li><a href="/nosotros" class="hover:text-white">Nosotros</a></li>
+        <li><a href="/blog" class="hover:text-white">Blog</a></li>
+        <li><a href="/contacto" class="hover:text-white">Contacto</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="font-display text-lg font-medium text-white">Contacto</h2>
+      <address class="mt-4 grid gap-3 not-italic text-[0.98rem]">
+        <a href={SITE.mapsUrl} target="_blank" rel="noopener" class="flex gap-3 hover:text-white"><Icon name="pin" class="mt-0.5 h-5 w-5 flex-none text-vx-orange" />{fullAddress}</a>
+        <a href={telLink} class="flex gap-3 hover:text-white" data-call data-block="footer"><Icon name="phone" class="mt-0.5 h-5 w-5 flex-none text-vx-orange" />{SITE.phoneDisplay}</a>
+        <a href={`mailto:${SITE.email}`} class="flex gap-3 break-all hover:text-white"><Icon name="mail" class="mt-0.5 h-5 w-5 flex-none text-vx-orange" />{SITE.email}</a>
+        <a href={SITE.instagram} target="_blank" rel="noopener" class="flex gap-3 hover:text-white"><Icon name="instagram" class="mt-0.5 h-5 w-5 flex-none text-vx-orange" />{SITE.instagramHandle}</a>
+        <span class="flex gap-3"><Icon name="clock" class="mt-0.5 h-5 w-5 flex-none text-vx-orange" /><span>{SITE.hours.map((h) => <span class="block">{h.days}: {h.open}–{h.close}</span>)}</span></span>
+      </address>
+    </div>
+  </div>
+  <div class="wrap mt-14 flex flex-col gap-3 border-t border-white/15 pt-6 text-sm text-white/60 sm:flex-row sm:items-center sm:justify-between">
+    <p>© {year} {SITE.name}. Respaldado por <a href={SITE.parent.url} target="_blank" rel="noopener" class="underline underline-offset-4 hover:text-white">Capelton</a>.</p>
+    <p class="flex gap-5"><a href="/aviso-de-privacidad" class="hover:text-white">Aviso de privacidad</a><a href="/sitemap-index.xml" class="hover:text-white">Mapa del sitio</a></p>
+  </div>
+</footer>

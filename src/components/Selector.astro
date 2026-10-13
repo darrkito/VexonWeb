@@ -1,0 +1,76 @@
+---
+/**
+ * "Momento 0": el visitante elige cuántas personas y si necesita privado, y ve al instante su modelo.
+ * Todas las tarjetas se renderizan en el HTML (indexables) y el script solo muestra la elegida.
+ */
+import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
+import { MODELOS } from '../data/modelos';
+import { buildWhatsAppLink } from '../lib/whatsapp';
+interface Props { id?: string; compact?: boolean }
+const { id = 'selector', compact = false } = Astro.props;
+const rangos = [
+  { v: 3, l: '1 a 3' },
+  { v: 5, l: '4 a 5' },
+  { v: 7, l: '6 a 7' },
+  { v: 9, l: '8 a 9' },
+];
+const defaultSlug = 'vx-6m';
+---
+<div class="selector" data-selector={id}>
+  <fieldset>
+    <legend class="font-display text-xl text-vx-black sm:text-2xl">¿Cuántas personas van a trabajar en la oficina?</legend>
+    <div class="mt-3 grid grid-cols-4 gap-2">
+      {rangos.map((r) => (
+        <label><input class="sr-only" type="radio" name={`${id}-p`} value={r.v} checked={r.v === 7} /><span class="opt !text-base sm:!text-lg">{r.l}</span></label>
+      ))}
+    </div>
+  </fieldset>
+  <label class="mt-3 flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-xl bg-vx-sand px-4">
+    <span class="font-display text-[1.05rem] text-vx-black">Necesito una oficina privada</span>
+    <input type="checkbox" name={`${id}-priv`} class="switch" />
+  </label>
+
+  <div class="mt-4" aria-live="polite">
+    {MODELOS.map((m) => (
+      <div class="rec card overflow-hidden" data-slug={m.slug} data-personas={m.personas} data-dist={m.distribucion} data-largo={m.largo} hidden={m.slug !== defaultSlug}>
+        <div class:list={['grid items-center gap-4 p-4', !compact && 'sm:grid-cols-[1fr_1.1fr]']}>
+          <Picture src={m.image} formats={['avif']} fallbackFormat="webp" widths={[320, 520]} sizes="(min-width: 640px) 260px, 70vw" alt={`Oficina móvil ${m.code}`} class="mx-auto h-32 w-auto object-contain" loading="lazy" />
+          <div>
+            <p class="text-sm text-vx-slate">Tu oficina ideal</p>
+            <p class="model-code text-4xl leading-none">{m.code}</p>
+            <p class="mt-2 text-[0.95rem] text-vx-slate">{m.largo} × {m.ancho} m · {m.personas} personas · {m.mesas} mesas{m.areaPrivada ? ' · con privado' : ''}</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 border-t border-vx-line p-4">
+          <a href={buildWhatsAppLink({ model: m.code, people: String(m.personas) })} target="_blank" rel="noopener" class="btn btn-wa flex-1" data-wa data-block={`${id}-resultado`} data-model={m.code}>
+            <Icon name="whatsapp" class="btn-icon" /> Quiero la {m.code}
+          </a>
+          <a href={`/oficinas-moviles/${m.slug}`} class="inline-flex min-h-11 items-center font-display text-vx-black underline decoration-vx-orange decoration-2 underline-offset-4">Ver detalle</a>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+<style>
+  .switch { appearance: none; width: 3rem; height: 1.75rem; border-radius: 99px; background: var(--color-vx-line); position: relative; cursor: pointer; transition: background .2s; flex: none; }
+  .switch::after { content: ''; position: absolute; top: 0.2rem; left: 0.2rem; width: 1.35rem; height: 1.35rem; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgb(0 0 0 / .25); transition: transform .2s; }
+  .switch:checked { background: var(--color-vx-orange); }
+  .switch:checked::after { transform: translateX(1.25rem); }
+  .switch:focus-visible { outline: 3px solid var(--color-vx-orange); outline-offset: 2px; }
+</style>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-selector]').forEach((root) => {
+    const id = root.dataset.selector!;
+    const cards = Array.from(root.querySelectorAll<HTMLElement>('.rec'));
+    const update = () => {
+      const p = Number((root.querySelector(`input[name="${id}-p"]:checked`) as HTMLInputElement)?.value ?? 7);
+      const priv = (root.querySelector(`input[name="${id}-priv"]`) as HTMLInputElement).checked;
+      const pool = cards.filter((c) => c.dataset.dist === (priv ? 'P' : 'M')).sort((a, b) => Number(a.dataset.largo) - Number(b.dataset.largo));
+      const pick = pool.find((c) => Number(c.dataset.personas) >= p) ?? pool[pool.length - 1];
+      cards.forEach((c) => (c.hidden = c !== pick));
+      window.vxTrack?.('selector_result', { model: pick.dataset.slug, people: p, privado: priv });
+    };
+    root.addEventListener('change', update);
+  });
+</script>

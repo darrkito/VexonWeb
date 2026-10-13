@@ -1,0 +1,119 @@
+---
+/**
+ * Formulario corto (4 campos obligatorios). Funciona sin JavaScript (POST normal → /gracias).
+ * Con JavaScript se envía por fetch y redirige igual. Antispam: honeypot + Turnstile opcional.
+ */
+import { MODELOS } from '../data/modelos';
+import { SITE } from '../lib/site';
+interface Props { id?: string; model?: string; dark?: boolean; source?: string }
+const { id = 'formulario', model, dark = false, source = 'web' } = Astro.props;
+const turnstile = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+---
+<form id={id} method="post" action="/api/cotizacion" class:list={['quote-form grid gap-4', dark && 'is-dark']} data-quote-form novalidate>
+  <input type="hidden" name="origen" value={source} />
+  <div class="hidden" aria-hidden="true">
+    <label>No llenar <input type="text" name="empresa_web" tabindex="-1" autocomplete="off" /></label>
+  </div>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <label class="label" for={`${id}-nombre`}>Nombre</label>
+      <input class="field" id={`${id}-nombre`} name="nombre" autocomplete="name" required minlength="2" />
+    </div>
+    <div>
+      <label class="label" for={`${id}-tel`}>WhatsApp o teléfono</label>
+      <input class="field" id={`${id}-tel`} name="telefono" type="tel" inputmode="tel" autocomplete="tel" required pattern="[0-9 +()-]{10,}" placeholder="33 1234 5678" />
+    </div>
+    <div>
+      <label class="label" for={`${id}-modelo`}>Modelo o personas</label>
+      <select class="field" id={`${id}-modelo`} name="modelo" required>
+        <option value="">Elige una opción</option>
+        <option value="No sé, recomiéndenme">No sé, recomiéndenme</option>
+        {MODELOS.map((m) => <option value={m.code} selected={m.code === model}>{m.code} ({m.personas} personas)</option>)}
+      </select>
+    </div>
+    <div>
+      <label class="label" for={`${id}-muni`}>Municipio de la obra</label>
+      <select class="field" id={`${id}-muni`} name="municipio" required>
+        <option value="">Elige el municipio</option>
+        {SITE.areaServed.map((m) => <option>{m}</option>)}
+        <option>Otro lugar de Jalisco</option>
+      </select>
+    </div>
+  </div>
+  <details class="group">
+    <summary class="cursor-pointer list-none font-display text-[0.98rem] underline underline-offset-4">Agregar correo, empresa o fecha (opcional)</summary>
+    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+      <div>
+        <label class="label" for={`${id}-correo`}>Correo</label>
+        <input class="field" id={`${id}-correo`} name="correo" type="email" autocomplete="email" />
+      </div>
+      <div>
+        <label class="label" for={`${id}-empresa`}>Empresa</label>
+        <input class="field" id={`${id}-empresa`} name="empresa" autocomplete="organization" />
+      </div>
+      <div>
+        <label class="label" for={`${id}-fecha`}>Fecha de inicio</label>
+        <input class="field" id={`${id}-fecha`} name="fecha" type="month" />
+      </div>
+      <div>
+        <label class="label" for={`${id}-meses`}>Tiempo de renta aproximado</label>
+        <select class="field" id={`${id}-meses`} name="duracion">
+          <option value="">Sin definir</option>
+          <option>Menos de 3 meses</option>
+          <option>3 a 6 meses</option>
+          <option>6 a 12 meses</option>
+          <option>Más de 12 meses</option>
+        </select>
+      </div>
+    </div>
+  </details>
+  <label class="flex items-start gap-3 text-[0.95rem]">
+    <input type="checkbox" name="formal" value="si" class="mt-1 h-5 w-5 accent-[var(--color-vx-orange)]" />
+    <span>Quiero cotización formal por correo para mi empresa</span>
+  </label>
+  {turnstile && <div class="cf-turnstile" data-sitekey={turnstile} data-size="flexible"></div>}
+  <button type="submit" class="btn btn-dark btn-lg w-full sm:w-auto">Enviar solicitud de cotización</button>
+  <p class:list={['text-sm', dark ? 'text-white/70' : 'text-vx-slate']}>
+    Al enviar aceptas nuestro <a href="/aviso-de-privacidad" class="underline underline-offset-4">aviso de privacidad</a>. Solo usamos tus datos para darte la cotización.
+  </p>
+  <p class="form-error hidden rounded-xl bg-vx-orange-soft px-4 py-3 text-vx-black" role="alert" data-form-error></p>
+</form>
+{turnstile && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+<style>
+  .quote-form.is-dark :global(.label) { color: #fff; }
+  .quote-form.is-dark summary { color: #fff; }
+  .quote-form.is-dark > label { color: #fff; }
+  .quote-form summary::-webkit-details-marker { display: none; }
+  .quote-form :global(.field:user-invalid) { border-color: var(--color-vx-orange); box-shadow: inset 0 0 0 1px var(--color-vx-orange); }
+</style>
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-quote-form]').forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      const err = form.querySelector<HTMLElement>('[data-form-error]')!;
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        const first = form.querySelector<HTMLElement>(':invalid');
+        first?.focus();
+        err.textContent = 'Revisa los campos marcados: nombre, teléfono de 10 dígitos, modelo y municipio son necesarios para cotizar.';
+        err.classList.remove('hidden');
+        return;
+      }
+      e.preventDefault();
+      const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+      btn.disabled = true;
+      btn.textContent = 'Enviando…';
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || 'No se pudo enviar');
+        window.vxTrack?.('form_submit', { model: (form.elements.namedItem('modelo') as HTMLSelectElement).value });
+        location.href = '/gracias';
+      } catch (ex) {
+        err.textContent = `${(ex as Error).message}. Mientras tanto, escríbenos por WhatsApp y te atendemos por ahí.`;
+        err.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Enviar solicitud de cotización';
+      }
+    });
+  });
+</script>

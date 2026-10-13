@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  calidad:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Tipos
+        run: pnpm check
+      - name: Build
+        run: pnpm build
+      - name: Navegador para pruebas
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Pruebas (SEO, CTAs, accesibilidad, formulario)
+        run: pnpm test
+      - name: Lighthouse CI (falla si una página baja de 95 en móvil)
+        run: pnpm lhci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reportes
+          path: |
+            playwright-report
+            .lighthouseci
+          retention-days: 7

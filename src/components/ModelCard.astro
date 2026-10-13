@@ -1,0 +1,40 @@
+---
+import { Picture } from 'astro:assets';
+import WaButton from './WaButton.astro';
+import type { Modelo } from '../data/modelos';
+interface Props { m: Modelo; block: string; headingLevel?: 'h2' | 'h3'; class?: string }
+const { m, block, headingLevel = 'h3', class: cls = '' } = Astro.props;
+const H = headingLevel;
+---
+<article class:list={['model-card card group relative flex flex-col overflow-hidden', cls]} data-dist={m.distribucion}>
+  <a href={`/oficinas-moviles/${m.slug}`} class="relative block bg-vx-sand px-4 pt-6" aria-label={`Ver todo el detalle de la ${m.code}`}>
+    <span class="hatch pointer-events-none absolute inset-y-0 right-0 w-2/5 opacity-60" aria-hidden="true"></span>
+    <Picture
+      src={m.image}
+      formats={['avif']} fallbackFormat="webp"
+      widths={[360, 560, 760]}
+      sizes="(min-width: 1024px) 340px, (min-width: 640px) 45vw, 80vw"
+      alt={`Oficina móvil ${m.code} de ${m.largo} metros sobre remolque`}
+      class="relative mx-auto h-44 w-auto object-contain transition-transform duration-300 group-hover:-translate-y-1 sm:h-48"
+      style={`view-transition-name: ${m.slug}`}
+      loading="lazy"
+      decoding="async"
+    />
+  </a>
+  <div class="flex flex-1 flex-col p-5">
+    <div class="flex items-start justify-between gap-3">
+      <H class="model-code text-[2rem] leading-none"><a href={`/oficinas-moviles/${m.slug}`}>{m.code}</a></H>
+      <span class:list={['rounded-full px-2.5 py-1 text-xs font-display font-medium', m.distribucion === 'P' ? 'bg-vx-black text-white' : 'bg-vx-sand text-vx-black']}>{m.tipo}</span>
+    </div>
+    <p class="mt-3 text-[0.98rem] text-vx-slate">{m.resumen}</p>
+    <ul class="mt-4 grid grid-cols-3 gap-2 text-center">
+      <li class="rounded-lg bg-vx-sand px-2 py-2"><span class="block font-display text-lg text-vx-black">{m.largo} m</span><span class="text-xs text-vx-slate">largo</span></li>
+      <li class="rounded-lg bg-vx-sand px-2 py-2"><span class="block font-display text-lg text-vx-black">{m.personas}</span><span class="text-xs text-vx-slate">personas</span></li>
+      <li class="rounded-lg bg-vx-sand px-2 py-2"><span class="block font-display text-lg text-vx-black">{m.mesas}</span><span class="text-xs text-vx-slate">mesas</span></li>
+    </ul>
+    <div class="mt-auto flex flex-wrap items-center gap-x-4 gap-y-3 pt-5">
+      <WaButton block={block} model={m.code} people={String(m.personas)} label={`Cotizar ${m.code}`} class="flex-1" />
+      <a href={`/oficinas-moviles/${m.slug}`} class="inline-flex min-h-11 items-center gap-1.5 font-display text-vx-black underline decoration-vx-orange decoration-2 underline-offset-4">Ver todo el detalle</a>
+    </div>
+  </div>
+</article>

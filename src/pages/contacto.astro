@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Icon from '../components/Icon.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import FaqList from '../components/FaqList.astro';
+import { FAQ_CONTACTO } from '../data/faqs';
+import { SITE, fullAddress } from '../lib/site';
+import { telLink } from '../lib/whatsapp';
+import { breadcrumbs, faqPage } from '../lib/schema';
+
+const schema = [breadcrumbs([{ name: 'Inicio', url: SITE.url }, { name: 'Contacto', url: `${SITE.url}/contacto` }]), faqPage(FAQ_CONTACTO)];
+const mapEmbed = `https://www.google.com/maps?q=${SITE.geo.lat},${SITE.geo.lng}&z=15&output=embed`;
+---
+<BaseLayout
+  title="Contacto: Cotiza la Renta de tu Oficina Móvil | Vexon"
+  description={`Cotiza la renta de tu oficina móvil por WhatsApp al ${SITE.phoneDisplay} o con el formulario. Base en Zapopan. Lun–vie 8:00–18:00, sáb 9:00–14:00.`}
+  schema={schema}
+  pageType="ContactPage"
+  ogImage="/og/contacto.jpg"
+>
+  <section class="bg-vx-sand pb-14 pt-4 sm:pt-6">
+    <div class="wrap">
+      <Breadcrumbs items={[{ name: 'Inicio', href: '/' }, { name: 'Contacto' }]} />
+      <h1 class="mt-6 text-[2.4rem] leading-[1.04] sm:text-6xl">Cotiza tu oficina móvil</h1>
+      <p class="lead mt-4">La forma más rápida es WhatsApp: mándanos cuántas personas trabajarán, la ubicación de la obra y la fecha de inicio.</p>
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <a href={`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('Hola Vexon. Quiero cotizar la renta de una oficina móvil. Mi obra está en: ___. Empezaría el: ___. Tiempo de renta aproximado: ___.')}`} target="_blank" rel="noopener" class="group flex items-center gap-4 rounded-2xl bg-vx-orange p-5 text-vx-black" data-wa data-block="contacto-tarjeta">
+          <Icon name="whatsapp" class="h-10 w-10 flex-none" />
+          <span><span class="block font-display text-2xl">WhatsApp</span><span class="block">{SITE.phoneDisplay}</span></span>
+        </a>
+        <a href={telLink} class="flex items-center gap-4 rounded-2xl bg-white p-5" data-call data-block="contacto-tarjeta">
+          <Icon name="phone" class="h-10 w-10 flex-none text-vx-orange" />
+          <span><span class="block font-display text-2xl text-vx-black">Llamar</span><span class="block text-vx-slate">{SITE.phoneDisplay}</span></span>
+        </a>
+        <a href={`mailto:${SITE.email}`} class="flex items-center gap-4 rounded-2xl bg-white p-5 sm:col-span-2 lg:col-span-1">
+          <Icon name="mail" class="h-10 w-10 flex-none text-vx-orange" />
+          <span class="min-w-0"><span class="block font-display text-2xl text-vx-black">Correo</span><span class="block break-all text-vx-slate">{SITE.email}</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-white" aria-labelledby="form-title">
+    <div class="wrap grid gap-12 lg:grid-cols-[1.15fr_0.85fr]">
+      <div>
+        <h2 id="form-title" class="text-4xl">¿Prefieres que te contactemos?</h2>
+        <p class="mt-2 text-vx-slate">Cuatro datos y te llamamos o escribimos en horario de atención.</p>
+        <p class="mt-4 hidden rounded-xl bg-vx-orange-soft px-4 py-3 text-vx-black" role="alert" data-url-error>No pudimos enviar tu solicitud. Revisa los datos o escríbenos por WhatsApp.</p>
+        <div class="mt-6"><QuoteForm source="contacto" /></div>
+      </div>
+      <aside class="grid content-start gap-5">
+        <div class="overflow-hidden rounded-2xl bg-vx-sand">
+          <div class="map-facade relative aspect-[4/3]" data-map={mapEmbed}>
+            <div class="hatch absolute inset-0 opacity-30" aria-hidden="true"></div>
+            <div class="absolute inset-0 grid place-items-center p-6 text-center">
+              <div>
+                <Icon name="pin" class="mx-auto h-10 w-10 text-vx-orange" />
+                <p class="mt-2 font-display text-lg text-vx-black">{fullAddress}</p>
+                <button type="button" class="btn btn-dark mt-4" data-load-map>Ver mapa</button>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-3 p-4">
+            <a href={SITE.mapsUrl} target="_blank" rel="noopener" class="btn btn-ghost"><Icon name="pin" class="btn-icon" /> Cómo llegar</a>
+          </div>
+        </div>
+        <div class="rounded-2xl bg-vx-sand p-6">
+          <p class="font-display text-xl text-vx-black">Horario de atención</p>
+          <ul class="mt-3 grid gap-2">{SITE.hours.map((h) => <li class="flex justify-between"><span>{h.days}</span><span class="font-display text-vx-black">{h.open}–{h.close}</span></li>)}</ul>
+          <a href={SITE.instagram} target="_blank" rel="noopener" class="mt-5 inline-flex items-center gap-2 font-display text-vx-black underline underline-offset-4"><Icon name="instagram" class="h-5 w-5" /> {SITE.instagramHandle}</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <FaqList faqs={FAQ_CONTACTO} block="contacto" bg="sand" />
+</BaseLayout>
+
+<script>
+  if (new URLSearchParams(location.search).has('error')) document.querySelector('[data-url-error]')?.classList.remove('hidden');
+  document.querySelectorAll<HTMLElement>('[data-map]').forEach((el) => {
+    el.querySelector('[data-load-map]')?.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.src = el.dataset.map!;
+      f.title = 'Mapa de ubicación de Vexon en Zapopan';
+      f.loading = 'lazy';
+      f.className = 'absolute inset-0 h-full w-full border-0';
+      f.referrerPolicy = 'no-referrer-when-downgrade';
+      el.appendChild(f);
+    });
+  });
+</script>

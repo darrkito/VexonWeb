@@ -1,0 +1,12 @@
+---
+/** Icono de línea (trazo 1.75) servido desde el sprite SVG del layout: cada uso pesa ~80 bytes. */
+import type { IconName } from '../lib/icons';
+interface Props {
+  name: IconName;
+  class?: string;
+  label?: string;
+}
+const { name, class: cls = 'w-6 h-6', label } = Astro.props;
+const a11y = label ? { role: 'img' as const, 'aria-label': label } : { 'aria-hidden': 'true' as const };
+---
+<svg class={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" {...a11y}><use href={`#i-${name}`} /></svg>

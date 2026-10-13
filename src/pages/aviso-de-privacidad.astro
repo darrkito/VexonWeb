@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE, fullAddress } from '../lib/site';
+const updated = '12 de octubre de 2026';
+---
+<BaseLayout title="Aviso de privacidad | Vexon" description="Aviso de privacidad de Vexon by Capelton: qué datos personales recabamos en el sitio, para qué los usamos y cómo ejercer tus derechos ARCO.">
+  <section class="bg-white pb-20 pt-4 sm:pt-6">
+    <div class="wrap">
+      <Breadcrumbs items={[{ name: 'Inicio', href: '/' }, { name: 'Aviso de privacidad' }]} />
+      <article class="prose-vx mt-6">
+        <h1 class="text-5xl">Aviso de privacidad</h1>
+        <p class="text-sm text-vx-slate">Última actualización: {updated}</p>
+        <!-- PENDIENTE: revisión legal. Plantilla conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Completar razón social y RFC del responsable. -->
+        <h2>Responsable</h2>
+        <p>{SITE.name} (en adelante, "Vexon"), con domicilio en {fullAddress}, es responsable del tratamiento de los datos personales que nos proporcionas a través de este sitio, WhatsApp, teléfono o correo.</p>
+        <h2>Datos que recabamos</h2>
+        <ul>
+          <li>Nombre.</li>
+          <li>Teléfono o WhatsApp y, si lo proporcionas, correo electrónico.</li>
+          <li>Empresa, municipio de la obra, modelo de interés, fecha de inicio y tiempo estimado de renta.</li>
+        </ul>
+        <p>No recabamos datos personales sensibles.</p>
+        <h2>Para qué usamos tus datos</h2>
+        <p>Finalidades necesarias: atender tu solicitud, elaborar y enviarte la cotización, dar seguimiento a la renta y contactarte sobre el servicio que solicitaste.</p>
+        <p>Finalidades secundarias: enviarte información sobre nuestros servicios. Si no deseas que tus datos se usen para estas finalidades, escríbenos a <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+        <h2>Transferencias</h2>
+        <p>No vendemos ni compartimos tus datos con terceros para fines comerciales. Podemos compartirlos con Capelton, como empresa del mismo grupo, y con proveedores que nos prestan servicios de correo, almacenamiento o analítica, únicamente para las finalidades descritas.</p>
+        <h2>Derechos ARCO</h2>
+        <p>Puedes acceder, rectificar, cancelar u oponerte al uso de tus datos, así como revocar tu consentimiento, enviando una solicitud a <a href={`mailto:${SITE.email}`}>{SITE.email}</a> con tu nombre, el derecho que deseas ejercer y una identificación. Responderemos en los plazos que marca la ley.</p>
+        <h2>Cookies y analítica</h2>
+        <p>Este sitio puede usar herramientas de analítica (como Google Analytics) para medir visitas y mejorar la experiencia. Puedes desactivar las cookies desde la configuración de tu navegador.</p>
+        <h2>Cambios a este aviso</h2>
+        <p>Cualquier cambio a este aviso se publicará en esta página.</p>
+      </article>
+    </div>
+  </section>
+</BaseLayout>

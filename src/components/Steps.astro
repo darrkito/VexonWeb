@@ -1,0 +1,18 @@
+---
+/** Proceso de renta en 4 pasos (es una secuencia real, por eso va numerado). */
+const steps = [
+  { t: 'Nos escribes', d: 'Por WhatsApp, con cuántas personas trabajarán, dónde está la obra y cuándo empiezas.' },
+  { t: 'Te recomendamos el modelo', d: 'Te decimos qué oficina te conviene y te enviamos la cotización.' },
+  { t: 'La llevamos y la nivelamos', d: 'Llega a tu obra en remolque y queda firme sobre sus torres de nivelación.' },
+  { t: 'Trabajas desde el primer día', d: 'Conectas a 127 V y listo. Al terminar tu renta, la recogemos.' },
+];
+---
+<ol class="grid gap-px overflow-hidden rounded-2xl bg-vx-line sm:grid-cols-2 lg:grid-cols-4">
+  {steps.map((s, i) => (
+    <li class="relative bg-white p-6">
+      <span class="font-display text-5xl font-bold text-vx-orange" aria-hidden="true">{i + 1}</span>
+      <h3 class="mt-3 text-xl">{s.t}</h3>
+      <p class="mt-2 text-[0.98rem] text-vx-slate">{s.d}</p>
+    </li>
+  ))}
+</ol>

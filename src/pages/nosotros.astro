@@ -1,0 +1,93 @@
+---
+import { Picture } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Icon from '../components/Icon.astro';
+import WaButton from '../components/WaButton.astro';
+import FaqList from '../components/FaqList.astro';
+import { FAQ_NOSOTROS } from '../data/faqs';
+import { SITE, fullAddress } from '../lib/site';
+import { breadcrumbs, faqPage } from '../lib/schema';
+import foto from '../assets/fotos/oficina-movil-obra-portada.jpg';
+
+const pilares = [
+  { icon: 'truck', t: 'Movilidad', d: 'Espacios listos para instalarse donde se necesitan y moverse cuando el proyecto avanza.' },
+  { icon: 'grid', t: 'Funcionalidad', d: 'Distribuciones claras para operar de manera ágil: mesas, clima, luz y conexiones donde hacen falta.' },
+  { icon: 'shield', t: 'Durabilidad', d: 'Soluciones construidas para uso continuo: estructura de acero, muros Pintro de 3 pulgadas y piso SPC.' },
+] as const;
+const schema = [breadcrumbs([{ name: 'Inicio', url: SITE.url }, { name: 'Nosotros', url: `${SITE.url}/nosotros` }]), faqPage(FAQ_NOSOTROS)];
+---
+<BaseLayout
+  title="Nosotros: Vexon by Capelton, Oficinas Móviles en Renta"
+  description="Vexon es la línea de oficinas móviles en renta respaldada por Capelton. Espacios que se mueven contigo, con base en Zapopan y servicio en toda la ZMG."
+  schema={schema}
+  pageType="AboutPage"
+  ogImage="/og/nosotros.jpg"
+>
+  <section class="bg-white pb-14 pt-4 sm:pt-6">
+    <div class="wrap">
+      <Breadcrumbs items={[{ name: 'Inicio', href: '/' }, { name: 'Nosotros' }]} />
+      <div class="mt-6 grid gap-10 lg:grid-cols-2 lg:items-center">
+        <div>
+          <h1 class="text-[2.4rem] leading-[1.04] sm:text-6xl">Espacios que se mueven contigo</h1>
+          <p class="lead mt-5">Vexon es la línea de oficinas móviles en renta respaldada por Capelton, fabricante mexicano de espacios modulares y móviles. Reunimos una familia de oficinas funcionales, resistentes y listas para operar, en configuraciones de 3 a 10 metros que se adaptan a la escala y dinámica de cada proyecto.</p>
+          <p class="mt-4 text-vx-slate">Trabajamos solo con renta para que constructoras, negocios en remodelación y plantas industriales tengan una oficina completa durante el tiempo exacto que la necesitan, sin construir ni invertir en un activo que después no usarán.</p>
+          <WaButton block="nosotros-hero" size="lg" class="mt-8" micro />
+        </div>
+        <Picture src={foto} formats={['avif']} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 1024px) 560px, 92vw" alt="Oficina móvil Vexon instalada en obra con maquinaria al fondo" class="h-[30rem] w-full rounded-2xl object-cover object-[50%_60%]" loading="eager" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-vx-sand" aria-labelledby="pilares-title">
+    <div class="wrap">
+      <h2 id="pilares-title" class="text-4xl sm:text-5xl">Tres principios en cada oficina</h2>
+      <ul class="mt-10 grid gap-5 md:grid-cols-3">
+        {pilares.map((p) => (
+          <li class="rounded-2xl bg-white p-7">
+            <Icon name={p.icon} class="h-9 w-9 text-vx-orange" />
+            <h3 class="mt-4 text-2xl">{p.t}</h3>
+            <p class="mt-2 text-vx-slate">{p.d}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section bg-white" aria-labelledby="capelton-title">
+    <div class="wrap grid gap-10 lg:grid-cols-2">
+      <div>
+        <h2 id="capelton-title" class="text-4xl sm:text-5xl">El respaldo de Capelton</h2>
+        <p class="lead mt-4">Capelton diseña y fabrica espacios móviles y modulares para obra, industria y servicios en México. Vexon toma esa experiencia y la convierte en una línea de oficinas en renta pensada para Guadalajara.</p>
+        <a href={SITE.parent.url} target="_blank" rel="noopener" class="mt-6 inline-flex items-center gap-2 font-display text-vx-black underline decoration-vx-capelton decoration-2 underline-offset-4">Conoce Capelton <Icon name="arrow" class="h-4 w-4" /></a>
+      </div>
+      <dl class="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-vx-line">
+        <div class="bg-white p-6"><dt class="text-sm text-vx-slate">Modelos en renta</dt><dd class="mt-1 font-display text-4xl text-vx-black">8</dd></div>
+        <div class="bg-white p-6"><dt class="text-sm text-vx-slate">Largo de las oficinas</dt><dd class="mt-1 font-display text-4xl text-vx-black">3 a 10 m</dd></div>
+        <div class="bg-white p-6"><dt class="text-sm text-vx-slate">Personas por oficina</dt><dd class="mt-1 font-display text-4xl text-vx-black">3 a 9</dd></div>
+        <div class="bg-white p-6"><dt class="text-sm text-vx-slate">Municipios atendidos</dt><dd class="mt-1 font-display text-4xl text-vx-black">6</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section bg-vx-sand" aria-labelledby="donde-title">
+    <div class="wrap grid gap-8 lg:grid-cols-2 lg:items-center">
+      <div>
+        <h2 id="donde-title" class="text-4xl sm:text-5xl">Dónde estamos</h2>
+        <p class="lead mt-4">{fullAddress}</p>
+        <p class="mt-3 text-vx-slate">Atendemos {SITE.areaServed.join(', ')}.</p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <WaButton block="nosotros-donde" />
+          <a href={SITE.mapsUrl} target="_blank" rel="noopener" class="btn btn-ghost"><Icon name="pin" class="btn-icon" /> Cómo llegar</a>
+        </div>
+      </div>
+      <div class="rounded-2xl bg-white p-6">
+        <p class="font-display text-xl text-vx-black">Horario de atención</p>
+        <ul class="mt-3 grid gap-2">{SITE.hours.map((h) => <li class="flex justify-between border-b border-vx-sand pb-2"><span>{h.days}</span><span class="font-display text-vx-black">{h.open}–{h.close}</span></li>)}</ul>
+        <p class="mt-4 text-sm text-vx-slate">Por WhatsApp puedes escribirnos a cualquier hora; te contestamos en horario de atención.</p>
+      </div>
+    </div>
+  </section>
+
+  <FaqList faqs={FAQ_NOSOTROS} block="nosotros" />
+</BaseLayout>

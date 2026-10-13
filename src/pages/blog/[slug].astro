@@ -1,0 +1,69 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import WaButton from '../../components/WaButton.astro';
+import FaqList from '../../components/FaqList.astro';
+import ModelCard from '../../components/ModelCard.astro';
+import { getModelo } from '../../data/modelos';
+import { SITE } from '../../lib/site';
+import { blogPosting, breadcrumbs, faqPage } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const d = post.data;
+const url = `${SITE.url}/blog/${post.id}`;
+const m = getModelo(d.model) ?? getModelo('vx-6m')!;
+const toc = headings.filter((h) => h.depth === 2);
+const fmt = (x: Date) => x.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const ogImage = `/og/blog-${post.id}.jpg`;
+const schema = [
+  blogPosting({ url, title: d.title, description: d.description, date: d.date, updated: d.updated, author: d.author, image: `${SITE.url}${ogImage}` }),
+  breadcrumbs([{ name: 'Inicio', url: SITE.url }, { name: 'Blog', url: `${SITE.url}/blog` }, { name: d.title, url }]),
+  ...(d.faqs.length ? [faqPage(d.faqs)] : []),
+];
+---
+<BaseLayout title={`${d.title} | Vexon`} description={d.description} schema={schema} ogType="article" ogImage={ogImage} model={m.code}>
+  <article>
+    <header class="bg-vx-sand pb-10 pt-4 sm:pt-6">
+      <div class="wrap">
+        <Breadcrumbs items={[{ name: 'Inicio', href: '/' }, { name: 'Blog', href: '/blog' }, { name: d.category }]} />
+        <h1 class="mt-6 max-w-4xl text-[2.2rem] leading-[1.06] sm:text-[3.4rem]">{d.title}</h1>
+        <p class="lead mt-4 !max-w-3xl">{d.description}</p>
+        <p class="mt-5 text-sm text-vx-slate">
+          Por <span class="text-vx-black">{d.author}</span> · Publicado el <time datetime={d.date.toISOString()}>{fmt(d.date)}</time>
+          {d.updated && <> · Actualizado el <time datetime={d.updated.toISOString()}>{fmt(d.updated)}</time></>}
+        </p>
+      </div>
+    </header>
+    <div class="wrap grid gap-12 py-12 lg:grid-cols-[1fr_20rem]">
+      <div class="prose-vx min-w-0">
+        {toc.length > 2 && (
+          <nav class="not-prose mb-10 rounded-2xl bg-vx-sand p-5" aria-label="Contenido del artículo">
+            <p class="font-display text-lg text-vx-black">En este artículo</p>
+            <ol class="mt-2 grid gap-1.5 text-[0.98rem]">
+              {toc.map((h) => <li><a href={`#${h.slug}`} class="text-vx-slate hover:text-vx-black hover:underline underline-offset-4">{h.text}</a></li>)}
+            </ol>
+          </nav>
+        )}
+        <Content />
+      </div>
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        <p class="mb-3 font-display text-lg text-vx-black">Modelo recomendado</p>
+        <ModelCard m={m} block="blog-aside" />
+      </aside>
+    </div>
+  </article>
+  {d.faqs.length > 0 && <FaqList faqs={d.faqs} block="blog" bg="sand" model={m.code} />}
+  <section class="relative overflow-hidden bg-vx-black py-16 text-white" aria-labelledby="cta-blog">
+    <div class="hatch-dark absolute inset-0" aria-hidden="true"></div>
+    <div class="wrap relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <h2 id="cta-blog" class="max-w-2xl text-4xl text-white">¿Listo para tener oficina en tu obra?</h2>
+      <WaButton block="blog-final" model={m.code} persona={d.persona} size="lg" />
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,88 @@
+---
+/**
+ * Cotizador en 3 pasos (hoja inferior en móvil, modal en escritorio).
+ * Personas → privado → municipio y fecha → abre WhatsApp con todo escrito.
+ * Funciona sin framework; los datos de modelos se pasan como JSON mínimo.
+ */
+import Icon from './Icon.astro';
+import { MODELOS } from '../data/modelos';
+import { SITE } from '../lib/site';
+const data = MODELOS.map((m) => ({ code: m.code, slug: m.slug, personas: m.personas, d: m.distribucion, largo: m.largo }));
+---
+<dialog id="cotizador" class="sheet" aria-labelledby="cotizador-title">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <button type="button" class="absolute right-3 top-3 grid h-11 w-11 place-items-center rounded-full hover:bg-vx-sand" aria-label="Cerrar cotizador" data-close-sheet><Icon name="x" /></button>
+  <h2 id="cotizador-title" class="pr-12 text-2xl">Cotiza tu oficina en 3 pasos</h2>
+  <p class="mt-1 text-[0.95rem] text-vx-slate">Al final se abre WhatsApp con tu solicitud escrita.</p>
+
+  <form class="mt-5 grid gap-5" data-cotizador-form>
+    <fieldset>
+      <legend class="label">1. ¿Cuántas personas van a trabajar?</legend>
+      <div class="grid grid-cols-4 gap-2">
+        {[['3', '1–3'], ['5', '4–5'], ['7', '6–7'], ['9', '8–9']].map(([v, l], i) => (
+          <label><input class="sr-only" type="radio" name="personas" value={v} checked={i === 2} /><span class="opt">{l}</span></label>
+        ))}
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend class="label">2. ¿Alguien necesita oficina privada?</legend>
+      <div class="grid grid-cols-2 gap-2">
+        <label><input class="sr-only" type="radio" name="privado" value="no" checked /><span class="opt">No, abierta</span></label>
+        <label><input class="sr-only" type="radio" name="privado" value="si" /><span class="opt">Sí, con privado</span></label>
+      </div>
+    </fieldset>
+    <div class="grid gap-3 sm:grid-cols-2">
+      <div>
+        <label class="label" for="cot-muni">3. Municipio de la obra</label>
+        <select id="cot-muni" name="municipio" class="field">
+          {SITE.areaServed.map((m) => <option>{m}</option>)}
+          <option>Otro lugar de Jalisco</option>
+        </select>
+      </div>
+      <div>
+        <label class="label" for="cot-fecha">Fecha de inicio</label>
+        <input id="cot-fecha" name="fecha" type="month" class="field" />
+      </div>
+    </div>
+    <div class="rounded-xl bg-vx-sand p-4" aria-live="polite">
+      <p class="text-[0.95rem] text-vx-slate">Te recomendamos</p>
+      <p class="font-display text-2xl text-vx-black" data-cot-model>VX-6M</p>
+      <a href="/oficinas-moviles/vx-6m" class="text-[0.95rem] text-vx-orange-text underline underline-offset-4" data-cot-link>Ver todo el detalle del modelo</a>
+    </div>
+    <a href="#" target="_blank" rel="noopener" class="btn btn-wa btn-lg w-full" data-wa data-block="cotizador" data-cot-wa>
+      <Icon name="whatsapp" class="btn-icon" /> Enviar por WhatsApp
+    </a>
+    <p class="text-center text-sm text-vx-slate">¿Prefieres correo? <a class="underline underline-offset-4" href="/contacto#formulario">Llena el formulario</a></p>
+  </form>
+</dialog>
+
+<script define:vars={{ data, wa: SITE.whatsappNumber }}>
+  const dlg = document.getElementById('cotizador');
+  const form = dlg.querySelector('[data-cotizador-form]');
+  const out = dlg.querySelector('[data-cot-model]');
+  const link = dlg.querySelector('[data-cot-link]');
+  const btn = dlg.querySelector('[data-cot-wa]');
+  const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  function pick(p, priv) {
+    const pool = data.filter((m) => m.d === (priv ? 'P' : 'M')).sort((a, b) => a.largo - b.largo);
+    return pool.find((m) => m.personas >= p) || pool[pool.length - 1];
+  }
+  function update() {
+    const f = new FormData(form);
+    const p = Number(f.get('personas'));
+    const priv = f.get('privado') === 'si';
+    const m = pick(p, priv);
+    out.textContent = m.code;
+    link.href = '/oficinas-moviles/' + m.slug;
+    const fecha = String(f.get('fecha') || '');
+    let cuando = '___';
+    if (fecha) { const [y, mo] = fecha.split('-'); cuando = months[Number(mo) - 1] + ' de ' + y; }
+    const rango = { 3: '1 a 3', 5: '4 a 5', 7: '6 a 7', 9: '8 a 9' }[p];
+    const text = `Hola Vexon. Quiero rentar una oficina móvil para ${rango} personas${priv ? ' con área privada' : ''}. El cotizador me recomendó la ${m.code}. Mi obra está en ${f.get('municipio')}. Empezaría en ${cuando}. Tiempo de renta aproximado: ___.`;
+    btn.href = `https://wa.me/${wa}?text=${encodeURIComponent(text)}`;
+    btn.dataset.model = m.code;
+  }
+  form.addEventListener('change', update);
+  form.addEventListener('submit', (e) => e.preventDefault());
+  update();
+</script>

@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import WaButton from '../components/WaButton.astro';
+---
+<BaseLayout title="Recibimos tu solicitud | Vexon" description="Gracias por cotizar con Vexon. Te contactamos en horario de atención." noindex>
+  <section class="relative overflow-hidden bg-vx-sand py-20 sm:py-28">
+    <div class="hatch absolute -right-20 top-0 h-full w-1/3 opacity-40" aria-hidden="true"></div>
+    <div class="wrap relative max-w-3xl">
+      <span class="grid h-14 w-14 place-items-center rounded-full bg-vx-capelton text-white"><Icon name="check" class="h-8 w-8" /></span>
+      <h1 class="mt-6 text-5xl sm:text-6xl">Recibimos tu solicitud</h1>
+      <p class="lead mt-4">Te contactamos por WhatsApp o teléfono en horario de atención (lunes a viernes de 8:00 a 18:00 y sábado de 9:00 a 14:00).</p>
+      <p class="mt-6 text-vx-slate">¿Quieres adelantar? Escríbenos y seguimos la conversación por ahí.</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <WaButton block="gracias" label="Continuar por WhatsApp" size="lg" />
+        <a href="/oficinas-moviles" class="btn btn-ghost btn-lg">Ver modelos</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+<script>
+  window.vxTrack?.('generate_lead', { method: 'form' });
+</script>

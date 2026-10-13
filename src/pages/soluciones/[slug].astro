@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Icon from '../../components/Icon.astro';
+import WaButton from '../../components/WaButton.astro';
+import ModelCard from '../../components/ModelCard.astro';
+import Steps from '../../components/Steps.astro';
+import FaqList from '../../components/FaqList.astro';
+import { SOLUCIONES, type Solucion } from '../../data/soluciones';
+import { getModelo } from '../../data/modelos';
+import { SITE } from '../../lib/site';
+import { telLink } from '../../lib/whatsapp';
+import { breadcrumbs, faqPage, rentalService } from '../../lib/schema';
+
+export function getStaticPaths() {
+  return SOLUCIONES.map((s) => ({ params: { slug: s.slug }, props: { s } }));
+}
+const { s } = Astro.props as { s: Solucion };
+const url = `${SITE.url}/soluciones/${s.slug}`;
+const modelos = s.modelos.map((x) => ({ ...x, m: getModelo(x.slug)! }));
+const otras = SOLUCIONES.filter((x) => x.slug !== s.slug);
+const nombres: Record<string, string> = { constructoras: 'Constructoras', remodelaciones: 'Remodelaciones', 'naves-e-industria': 'Naves e industria' };
+const schema = [
+  rentalService(url),
+  breadcrumbs([{ name: 'Inicio', url: SITE.url }, { name: `Soluciones para ${nombres[s.slug].toLowerCase()}`, url }]),
+  faqPage(s.faqs),
+];
+---
+<BaseLayout title={s.title} description={s.description} schema={schema} ogImage={`/og/soluciones-${s.slug}.jpg`}>
+  <section class="relative overflow-hidden bg-vx-sand pb-14 pt-4 sm:pt-6">
+    <div class="hatch absolute -right-20 top-0 h-full w-1/3 opacity-40" aria-hidden="true"></div>
+    <div class="wrap relative">
+      <Breadcrumbs items={[{ name: 'Inicio', href: '/' }, { name: 'Soluciones' }, { name: nombres[s.slug] }]} />
+      <nav class="mt-5 flex flex-wrap gap-2" aria-label="Soluciones">
+        {SOLUCIONES.map((x) => <a href={`/soluciones/${x.slug}`} class:list={['rounded-full px-4 py-2 font-display', x.slug === s.slug ? 'bg-vx-black text-white' : 'bg-white text-vx-black hover:bg-vx-line/40']} aria-current={x.slug === s.slug ? 'page' : undefined}>{nombres[x.slug]}</a>)}
+      </nav>
+      <h1 class="mt-6 max-w-4xl text-[2.3rem] leading-[1.05] sm:text-6xl">{s.h1}</h1>
+      <p class="lead mt-5 !max-w-3xl">{s.respuesta}</p>
+      <div class="mt-7 flex flex-wrap items-center gap-3">
+        <WaButton block={`sol-${s.slug}-hero`} persona={s.persona} size="lg" />
+        <a href={telLink} class="btn btn-ghost btn-lg" data-call data-block={`sol-${s.slug}-hero`}><Icon name="phone" class="btn-icon" /> Llamar</a>
+      </div>
+      <p class="microcopy mt-3">Sin compromiso. Te respondemos por WhatsApp en horario de atención.</p>
+    </div>
+  </section>
+
+  <section class="section bg-white" aria-labelledby="dolor-title">
+    <div class="wrap">
+      <h2 id="dolor-title" class="text-4xl sm:text-5xl">Lo que resuelves con una oficina móvil</h2>
+      <ul class="mt-10 grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+        {s.dolores.map((d) => (
+          <li class="border-t-2 border-vx-orange pt-4">
+            <h3 class="text-xl">{d.t}</h3>
+            <p class="mt-2 text-vx-slate">{d.d}</p>
+          </li>
+        ))}
+      </ul>
+      <WaButton block={`sol-${s.slug}-dolor`} persona={s.persona} label="Quiero resolverlo" class="mt-10" />
+    </div>
+  </section>
+
+  <section class="section bg-vx-sand" aria-labelledby="mod-title">
+    <div class="wrap">
+      <h2 id="mod-title" class="text-4xl sm:text-5xl">Modelos recomendados</h2>
+      <div class="mt-10 grid gap-5 md:grid-cols-3">
+        {modelos.map(({ m, por }) => (
+          <div class="flex flex-col gap-3">
+            <p class="font-display text-lg text-vx-black">{por}</p>
+            <ModelCard m={m} block={`sol-${s.slug}-modelos`} class="flex-1" />
+          </div>
+        ))}
+      </div>
+      <a href="/oficinas-moviles" class="mt-8 inline-block font-display text-vx-black underline decoration-vx-orange decoration-2 underline-offset-4">Ver los 8 modelos</a>
+    </div>
+  </section>
+
+  <section class="section bg-white" aria-labelledby="check-title">
+    <div class="wrap grid gap-10 lg:grid-cols-2">
+      <div>
+        <h2 id="check-title" class="text-4xl sm:text-5xl">Qué necesitas para instalarla</h2>
+        <p class="lead mt-4">Revisa estos puntos antes de cotizar; si tienes dudas, mándanos una foto del lugar por WhatsApp.</p>
+        <WaButton block={`sol-${s.slug}-checklist`} persona={s.persona} label="Enviar foto del lugar" class="mt-8" variant="dark" />
+      </div>
+      <ul class="grid gap-3">
+        {s.checklist.map((c) => (
+          <li class="flex gap-3 rounded-xl bg-vx-sand p-4"><Icon name="check" class="h-6 w-6 flex-none text-vx-orange" /><span>{c}</span></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section bg-vx-sand" aria-labelledby="pasos-title">
+    <div class="wrap">
+      <h2 id="pasos-title" class="text-4xl sm:text-5xl">Cómo funciona la renta</h2>
+      <div class="mt-10"><Steps /></div>
+    </div>
+  </section>
+
+  <FaqList faqs={s.faqs} block={`sol-${s.slug}`} />
+
+  <section class="relative overflow-hidden bg-vx-black py-16 text-white sm:py-20" aria-labelledby="cta-sol">
+    <div class="hatch-dark absolute inset-0" aria-hidden="true"></div>
+    <div class="wrap relative">
+      <h2 id="cta-sol" class="max-w-3xl text-4xl text-white sm:text-5xl">{s.ctaFinal}</h2>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <WaButton block={`sol-${s.slug}-final`} persona={s.persona} size="lg" />
+        {s.personaSecundaria && <WaButton block={`sol-${s.slug}-final-2`} persona={s.personaSecundaria} label="Necesito cotización formal" size="lg" variant="ghost-light" />}
+      </div>
+      <p class="mt-10 text-white/70">También te puede interesar: {otras.map((o, i) => <>{i > 0 && ' · '}<a href={`/soluciones/${o.slug}`} class="text-white underline underline-offset-4">{nombres[o.slug]}</a></>)}</p>
+    </div>
+  </section>
+</BaseLayout>

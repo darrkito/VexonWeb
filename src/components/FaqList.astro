@@ -1,0 +1,46 @@
+---
+/** Acordeón nativo (details/summary): sin JavaScript, accesible y con el texto en el HTML para Google y las IA. */
+import Icon from './Icon.astro';
+import WaButton from './WaButton.astro';
+import type { Faq } from '../data/faqs';
+interface Props {
+  faqs: Faq[];
+  title?: string;
+  intro?: string;
+  block: string;
+  model?: string;
+  id?: string;
+  bg?: 'white' | 'sand';
+}
+const { faqs, title = 'Preguntas frecuentes', intro, block, model, id = 'preguntas', bg = 'white' } = Astro.props;
+---
+<section id={id} class:list={['section', bg === 'sand' ? 'bg-vx-sand' : 'bg-white']} aria-labelledby={`${id}-titulo`}>
+  <div class="wrap grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+    <div class="lg:sticky lg:top-28 lg:self-start">
+      <h2 id={`${id}-titulo`} class="text-4xl sm:text-5xl">{title}</h2>
+      {intro && <p class="lead mt-4">{intro}</p>}
+      <div class="mt-7 hidden lg:block">
+        <WaButton block={`${block}-faq`} model={model} label="¿Otra duda? Pregúntanos" micro />
+      </div>
+    </div>
+    <div>
+      <div class="divide-y divide-vx-line border-y border-vx-line">
+        {faqs.map((f, i) => (
+          <details class="faq group" open={i === 0}>
+            <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-4 font-display text-lg text-vx-black sm:text-xl">
+              <h3 class="font-medium">{f.q}</h3>
+              <span class="grid h-8 w-8 flex-none place-items-center rounded-full bg-vx-sand transition-transform group-open:rotate-45"><Icon name="plus" class="h-4 w-4" /></span>
+            </summary>
+            <p class="pb-5 pr-10 text-vx-slate">{f.a}</p>
+          </details>
+        ))}
+      </div>
+      <div class="mt-8 lg:hidden">
+        <WaButton block={`${block}-faq`} model={model} label="¿Otra duda? Pregúntanos" micro />
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  .faq summary::-webkit-details-marker { display: none; }
+</style>

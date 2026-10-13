@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import WaButton from '../components/WaButton.astro';
+import { MODELOS } from '../data/modelos';
+---
+<BaseLayout title="Página no encontrada | Vexon" description="La página que buscas no existe. Encuentra aquí los modelos de oficina móvil en renta de Vexon." noindex>
+  <section class="bg-vx-sand py-20">
+    <div class="wrap max-w-3xl">
+      <p class="font-display text-7xl font-bold text-vx-orange">404</p>
+      <h1 class="mt-2 text-4xl sm:text-5xl">Esta página no existe, pero tu oficina sí</h1>
+      <p class="lead mt-4">Elige un modelo o escríbenos y te ayudamos a encontrar lo que buscas.</p>
+      <ul class="mt-8 flex flex-wrap gap-2">
+        {MODELOS.map((m) => <li><a href={`/oficinas-moviles/${m.slug}`} class="chip !text-base hover:bg-vx-black hover:text-white">{m.code}: {m.personas} personas</a></li>)}
+      </ul>
+      <WaButton block="404" class="mt-8" size="lg" />
+    </div>
+  </section>
+</BaseLayout>

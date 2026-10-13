@@ -1,0 +1,85 @@
+---
+/** Comparador de 2 modelos. La tabla inicial sale en el HTML; el script solo intercambia columnas. */
+import Icon from './Icon.astro';
+import { MODELOS, fmtKg, type Modelo } from '../data/modelos';
+import { buildWhatsAppLink } from '../lib/whatsapp';
+interface Props { a?: string; b?: string; block?: string }
+const { a = 'vx-6m', b = 'vx-6p', block = 'comparador' } = Astro.props;
+const rows: { k: string; label: string; fmt: (m: Modelo) => string }[] = [
+  { k: 'tipo', label: 'Distribución', fmt: (m) => m.tipo },
+  { k: 'medidas', label: 'Medidas (L × A × H)', fmt: (m) => `${m.largo} × ${m.ancho} × ${m.alto} m` },
+  { k: 'personas', label: 'Personas', fmt: (m) => String(m.personas) },
+  { k: 'mesas', label: 'Mesas de trabajo', fmt: (m) => String(m.mesas) },
+  { k: 'privado', label: 'Área privada', fmt: (m) => (m.areaPrivada ? 'Sí' : 'No') },
+  { k: 'mini', label: 'Minisplits', fmt: (m) => String(m.minisplits) },
+  { k: 'vent', label: 'Ventanas', fmt: (m) => String(m.ventanas) },
+  { k: 'led', label: 'Lámparas LED', fmt: (m) => String(m.lamparasLed) },
+  { k: 'ejes', label: 'Ejes', fmt: (m) => String(m.ejes) },
+  { k: 'torres', label: 'Torres de nivelación', fmt: (m) => String(m.torresNivelacion) },
+  { k: 'peso', label: 'Peso del remolque', fmt: (m) => fmtKg(m.pesoRemolqueKg) },
+  { k: 'carga', label: 'Capacidad de carga', fmt: (m) => fmtKg(m.capacidadCargaKg) },
+];
+const table = Object.fromEntries(MODELOS.map((m) => [m.slug, { code: m.code, wa: buildWhatsAppLink({ model: m.code, people: String(m.personas) }), v: Object.fromEntries(rows.map((r) => [r.k, r.fmt(m)])) }]));
+const A = MODELOS.find((m) => m.slug === a)!;
+const B = MODELOS.find((m) => m.slug === b)!;
+---
+<div class="comparador card overflow-hidden" data-comparador>
+  <div class="grid grid-cols-[1fr_1fr] gap-px bg-vx-line sm:grid-cols-[1.2fr_1fr_1fr]">
+    <div class="hidden bg-vx-sand p-4 sm:block"><p class="font-display text-lg text-vx-black">Compara dos modelos</p><p class="text-sm text-vx-slate">Las diferencias se marcan en naranja.</p></div>
+    {[A, B].map((m, i) => (
+      <div class="bg-vx-sand p-3 sm:p-4">
+        <label class="sr-only" for={`cmp-${i}`}>Modelo {i + 1}</label>
+        <select id={`cmp-${i}`} class="field !min-h-12 font-display !text-lg" data-col={i}>
+          {MODELOS.map((o) => <option value={o.slug} selected={o.slug === m.slug}>{o.code}</option>)}
+        </select>
+      </div>
+    ))}
+  </div>
+  <table class="w-full text-left">
+    <caption class="sr-only">Comparación de especificaciones entre dos oficinas móviles</caption>
+    <tbody>
+      {rows.map((r) => {
+        const va = r.fmt(A), vb = r.fmt(B);
+        return (
+          <tr class:list={['cmp-row border-t border-vx-line', va !== vb && 'is-diff']} data-k={r.k}>
+            <th scope="row" class="block px-3 pt-3 text-sm font-normal text-vx-slate sm:table-cell sm:w-[40%] sm:px-4 sm:py-3 sm:text-[0.95rem]">{r.label}</th>
+            <td class="inline-block w-1/2 px-3 pb-3 font-display text-lg text-vx-black sm:table-cell sm:w-auto sm:px-4 sm:py-3" data-c="0">{va}</td>
+            <td class="inline-block w-1/2 px-3 pb-3 font-display text-lg text-vx-black sm:table-cell sm:w-auto sm:px-4 sm:py-3" data-c="1">{vb}</td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+  <div class="grid gap-3 border-t border-vx-line bg-white p-4 sm:grid-cols-2">
+    {[A, B].map((m, i) => (
+      <a href={buildWhatsAppLink({ model: m.code, people: String(m.personas) })} target="_blank" rel="noopener" class:list={['btn w-full', i === 1 ? 'btn-wa' : 'btn-ghost']} data-wa data-block={block} data-model={m.code} data-cta={i}>
+        <Icon name="whatsapp" class="btn-icon" /> <span>Cotizar la {m.code}</span>
+      </a>
+    ))}
+  </div>
+</div>
+<style>
+  .cmp-row.is-diff td { color: var(--color-vx-orange-text); }
+  .cmp-row.is-diff { background: linear-gradient(90deg, var(--color-vx-orange-soft), transparent 70%); }
+</style>
+<script define:vars={{ table }}>
+  document.querySelectorAll('[data-comparador]').forEach((root) => {
+    const sel = root.querySelectorAll('select[data-col]');
+    const update = () => {
+      const s = [sel[0].value, sel[1].value];
+      root.querySelectorAll('.cmp-row').forEach((row) => {
+        const k = row.dataset.k;
+        const v = s.map((slug) => table[slug].v[k]);
+        row.querySelectorAll('td').forEach((td, i) => (td.textContent = v[i]));
+        row.classList.toggle('is-diff', v[0] !== v[1]);
+      });
+      root.querySelectorAll('[data-cta]').forEach((a) => {
+        const t = table[s[Number(a.dataset.cta)]];
+        a.href = t.wa; a.dataset.model = t.code;
+        a.querySelector('span').textContent = 'Cotizar la ' + t.code;
+      });
+      window.vxTrack && window.vxTrack('compare_models', { a: s[0], b: s[1] });
+    };
+    sel.forEach((s) => s.addEventListener('change', update));
+  });
+</script>

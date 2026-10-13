@@ -1,0 +1,58 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { NAV, SITE } from '../lib/site';
+import { buildWhatsAppLink, telLink } from '../lib/whatsapp';
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href.split('/').slice(0, 2).join('/')));
+---
+<a href="#contenido" class="sr-only-focusable fixed left-3 top-3 z-[60] btn btn-dark">Saltar al contenido</a>
+<header class="site-header sticky top-0 z-40 border-b border-transparent bg-white/92 backdrop-blur-md transition-[border-color,box-shadow]" data-header>
+  <div class="wrap flex h-14 items-center justify-between gap-4 lg:h-[4.5rem]">
+    <a href="/" class="flex items-center" aria-label="Vexon by Capelton, inicio">
+      <Logo class="h-[1.9rem] w-auto lg:h-9" />
+    </a>
+    <nav class="hidden items-center gap-1 lg:flex" aria-label="Principal">
+      {NAV.map((item) => (
+        <a
+          href={item.href}
+          class:list={['rounded-full px-3.5 py-2 font-display text-[1.02rem] text-vx-ink hover:bg-vx-sand', isActive(item.href) && 'bg-vx-sand text-vx-black']}
+          aria-current={isActive(item.href) ? 'page' : undefined}
+        >{item.label}</a>
+      ))}
+    </nav>
+    <div class="flex items-center gap-2">
+      <a href={telLink} class="hidden items-center gap-2 rounded-full px-3 py-2 font-display text-vx-black hover:bg-vx-sand xl:inline-flex" data-call data-block="header">
+        <Icon name="phone" class="h-5 w-5" /> {SITE.phoneDisplay}
+      </a>
+      <a href={buildWhatsAppLink()} target="_blank" rel="noopener" class="btn btn-wa hidden !min-h-11 sm:inline-flex" data-wa data-block="header">
+        <Icon name="whatsapp" class="btn-icon" /> Cotizar por WhatsApp
+      </a>
+      <button type="button" class="grid h-11 w-11 place-items-center rounded-full text-vx-black hover:bg-vx-sand lg:hidden" aria-label="Abrir menú" aria-haspopup="dialog" data-open-menu>
+        <Icon name="menu" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<dialog id="menu" class="sheet" aria-label="Menú">
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <nav class="flex flex-col" aria-label="Menú móvil">
+    <a href="/" class="sheet-link">Inicio</a>
+    {NAV.map((item) => <a href={item.href} class="sheet-link">{item.label}</a>)}
+    <a href="/soluciones/remodelaciones" class="sheet-link sheet-sub">Para remodelaciones</a>
+    <a href="/soluciones/naves-e-industria" class="sheet-link sheet-sub">Para naves e industria</a>
+  </nav>
+  <div class="mt-5 grid gap-3">
+    <a href={buildWhatsAppLink()} target="_blank" rel="noopener" class="btn btn-wa btn-lg w-full" data-wa data-block="menu"><Icon name="whatsapp" class="btn-icon" /> Cotizar por WhatsApp</a>
+    <a href={telLink} class="btn btn-ghost w-full" data-call data-block="menu"><Icon name="phone" class="btn-icon" /> Llamar al {SITE.phoneDisplay}</a>
+  </div>
+  <button type="button" class="absolute right-3 top-3 grid h-11 w-11 place-items-center rounded-full hover:bg-vx-sand" aria-label="Cerrar menú" data-close-sheet><Icon name="x" /></button>
+</dialog>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 8);
+  onScroll();
+  addEventListener('scroll', onScroll, { passive: true });
+</script>

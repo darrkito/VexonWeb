@@ -1,0 +1,29 @@
+---
+/** Barra inferior tipo app (solo móvil): Inicio · Modelos · Cotizar · WhatsApp · Llamar */
+import Icon from './Icon.astro';
+import { buildWhatsAppLink, telLink } from '../lib/whatsapp';
+interface Props { model?: string }
+const { model } = Astro.props;
+const path = Astro.url.pathname;
+---
+<nav class="bottombar fixed inset-x-0 bottom-0 z-40 border-t border-vx-line bg-white/96 backdrop-blur-md lg:hidden" aria-label="Acciones rápidas">
+  <ul class="mx-auto grid max-w-lg grid-cols-5 items-end px-1 pt-1.5" style="padding-bottom: max(0.4rem, env(safe-area-inset-bottom));">
+    <li><a href="/" class:list={['tab', path === '/' && 'is-active']} aria-current={path === '/' ? 'page' : undefined}><Icon name="home" class="h-6 w-6" /><span>Inicio</span></a></li>
+    <li><a href="/oficinas-moviles" class:list={['tab', path.startsWith('/oficinas-moviles') && 'is-active']}><Icon name="grid" class="h-6 w-6" /><span>Modelos</span></a></li>
+    <li class="flex justify-center">
+      <button type="button" class="tab-main" data-open-cotizador data-block="bottombar">
+        <span class="grid h-14 w-14 place-items-center rounded-full bg-vx-orange text-vx-black shadow-lg ring-4 ring-white"><Icon name="clipboard" class="h-6 w-6" /></span>
+        <span>Cotizar</span>
+      </button>
+    </li>
+    <li><a href={buildWhatsAppLink({ model })} target="_blank" rel="noopener" class="tab" data-wa data-block="bottombar" data-model={model}><Icon name="whatsapp" class="h-6 w-6 text-[#1faa55]" /><span>WhatsApp</span></a></li>
+    <li><a href={telLink} class="tab" data-call data-block="bottombar"><Icon name="phone" class="h-6 w-6" /><span>Llamar</span></a></li>
+  </ul>
+</nav>
+<style>
+  .tab { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; min-height: 3.25rem; justify-content: center; font-family: var(--font-display); font-size: 0.75rem; color: var(--color-vx-slate); }
+  .tab.is-active { color: var(--color-vx-black); }
+  .tab.is-active :global(svg) { color: var(--color-vx-orange); }
+  .tab-main { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; margin-top: -1.6rem; font-family: var(--font-display); font-size: 0.75rem; color: var(--color-vx-black); }
+  .tab-main:active span:first-child { transform: scale(0.95); }
+</style>

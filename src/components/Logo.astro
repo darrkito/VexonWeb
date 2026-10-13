@@ -1,0 +1,8 @@
+---
+import LogoColor from '../assets/brand/vexon-logo.svg';
+import LogoWhite from '../assets/brand/vexon-logo-white.svg';
+interface Props { variant?: 'color' | 'white'; class?: string }
+const { variant = 'color', class: cls = 'h-8 w-auto' } = Astro.props;
+const C = variant === 'white' ? LogoWhite : LogoColor;
+---
+<C class={cls} role="img" aria-label="Vexon by Capelton" />

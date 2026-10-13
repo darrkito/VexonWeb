@@ -1,0 +1,6 @@
+---
+import { ICONS } from '../lib/icons';
+---
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  {Object.entries(ICONS).map(([k, d]) => <symbol id={`i-${k}`} viewBox="0 0 24 24" set:html={d} />)}
+</svg>

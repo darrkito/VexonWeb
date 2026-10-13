@@ -1,0 +1,35 @@
+---
+/**
+ * Botón principal de conversión. Siempre abre WhatsApp con un mensaje prellenado según el contexto
+ * y registra el bloque de origen (data-block) para medir qué sección vende más.
+ */
+import Icon from './Icon.astro';
+import { buildWhatsAppLink, type WhatsAppContext } from '../lib/whatsapp';
+
+interface Props extends WhatsAppContext {
+  label?: string;
+  block: string;
+  size?: 'md' | 'lg';
+  variant?: 'wa' | 'dark' | 'ghost' | 'ghost-light';
+  class?: string;
+  micro?: boolean;
+  microClass?: string;
+}
+const { label = 'Cotizar por WhatsApp', block, size = 'md', variant = 'wa', class: cls = '', micro = false, microClass = '', ...ctx } = Astro.props;
+const href = buildWhatsAppLink(ctx);
+---
+<div class:list={['inline-flex flex-col gap-2', cls]}>
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener"
+    class:list={['btn', `btn-${variant}`, size === 'lg' && 'btn-lg']}
+    data-wa
+    data-block={block}
+    data-model={ctx.model}
+  >
+    <Icon name="whatsapp" class="btn-icon" />
+    <span>{label}</span>
+  </a>
+  {micro && <span class:list={['microcopy', microClass]}>Sin compromiso. Te respondemos por WhatsApp en horario de atención.</span>}
+</div>

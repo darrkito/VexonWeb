@@ -1,0 +1,339 @@
+---
+import { Picture } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import WaButton from '../components/WaButton.astro';
+import ModelCard from '../components/ModelCard.astro';
+import Selector from '../components/Selector.astro';
+import Hotspots from '../components/Hotspots.astro';
+import Comparador from '../components/Comparador.astro';
+import Steps from '../components/Steps.astro';
+import FaqList from '../components/FaqList.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { MODELOS, getModelo } from '../data/modelos';
+import { FAQ_HOME } from '../data/faqs';
+import { PERSONAS } from '../data/personas';
+import { SITE, fullAddress } from '../lib/site';
+import { telLink } from '../lib/whatsapp';
+import { faqPage, rentalService, itemList } from '../lib/schema';
+import fotoObra from '../assets/fotos/oficinas-moviles-obra-atardecer.jpg';
+
+const hero = getModelo('vx-10m')!;
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
+
+const title = 'Renta de Oficinas Móviles en Guadalajara | Vexon';
+const description = 'Renta de oficinas móviles para obra y remodelación en Guadalajara y Zapopan. 8 modelos de 3 a 10 m con clima y mesas de trabajo. Cotiza por WhatsApp.';
+const schema = [
+  rentalService(SITE.url),
+  faqPage(FAQ_HOME),
+  itemList(MODELOS.map((m) => ({ name: `Oficina móvil ${m.code}`, url: `${SITE.url}/oficinas-moviles/${m.slug}` }))),
+];
+
+const dolores = [
+  { icon: 'hardhat', t: 'Sin construir nada', d: 'Olvídate de levantar una caseta de block o madera que después hay que demoler.' },
+  { icon: 'check', t: 'Lista desde el primer día', d: 'Llega con mesas, clima, luz LED y contactos. Conectas y empiezas a trabajar.' },
+  { icon: 'truck', t: 'Se mueve con tu obra', d: 'Va sobre remolque: cuando cambia el frente de trabajo, la oficina se mueve contigo.' },
+  { icon: 'snow', t: 'Clima en todos los modelos', d: 'Minisplit incluido para trabajar a gusto en los meses de calor de Guadalajara.' },
+] as const;
+
+const comparativa = [
+  { k: 'Para empezar a trabajar', vx: 'Llega lista y nivelada', caseta: 'Hay que construirla', cont: 'Hay que adaptarlo' },
+  { k: 'Clima, mesas y luz', vx: 'Incluidos', caseta: 'Por tu cuenta', cont: 'Por tu cuenta' },
+  { k: 'Si cambia el frente de obra', vx: 'Se mueve en remolque', caseta: 'Se queda donde está', cont: 'Requiere grúa' },
+  { k: 'Al terminar', vx: 'La recogemos', caseta: 'Demolición y escombro', cont: 'Hay que retirarlo' },
+  { k: 'Inversión', vx: 'Renta por el tiempo que la usas', caseta: 'Material y mano de obra', cont: 'Compra o renta más adaptación' },
+];
+---
+<BaseLayout
+  title={title}
+  description={description}
+  schema={schema}
+>
+  <!-- 1. HERO -->
+  <section class="relative overflow-hidden bg-white" aria-labelledby="hero-title">
+    <div class="wrap grid items-center gap-2 pb-10 pt-3 sm:pt-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-10 lg:pb-16 lg:pt-10">
+      <div class="relative z-10 order-2 lg:order-1">
+        <p class="hidden items-center gap-2 rounded-full bg-vx-sand px-3 py-1.5 text-[0.9rem] text-vx-black sm:inline-flex">
+          <span class="h-2 w-2 rounded-full bg-vx-capelton" aria-hidden="true"></span>
+          Renta en Guadalajara, Zapopan y la zona metropolitana
+        </p>
+        <h1 id="hero-title" class="text-[2.15rem] leading-[1.04] xs:text-[2.4rem] sm:mt-4 sm:text-[3.2rem] xl:text-[3.5rem]">
+          Renta de oficinas móviles en Guadalajara para obra y remodelación
+        </h1>
+        <p class="lead mt-4 sm:mt-5">
+          Tu mejor opción para tener la mejor oficina en obra: equipada con clima, mesas de trabajo y conexiones eléctricas. De 3 a 10 metros, para 3 a 9 personas.
+        </p>
+        <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3 sm:mt-7">
+          <WaButton block="hero" size="lg" class="w-full xs:w-auto [&>a]:w-full" />
+          <a href="#modelos" class="btn btn-ghost btn-lg hidden sm:inline-flex">Ver los 8 modelos</a>
+          <a href="#modelos" class="font-display text-vx-black underline decoration-vx-orange decoration-2 underline-offset-4 sm:hidden">Ver los 8 modelos</a>
+        </div>
+        <p class="microcopy mt-3">Sin compromiso. Te respondemos por WhatsApp en horario de atención.</p>
+        <ul class="mt-6 flex flex-wrap gap-2" aria-label="Lo que incluye">
+          <li class="chip"><Icon name="check" class="h-4 w-4 text-vx-orange" /> Solo renta</li>
+          <li class="chip"><Icon name="snow" class="h-4 w-4 text-vx-orange" /> Clima incluido</li>
+          <li class="chip"><Icon name="shield" class="h-4 w-4 text-vx-orange" /> Respaldo de fábrica Capelton</li>
+        </ul>
+      </div>
+      <div class="relative order-1 -mx-4 sm:mx-0 lg:order-2">
+        <div class="hatch hatch-drift absolute -right-24 bottom-[12%] left-[18%] top-[8%] rounded-l-[3rem] opacity-70 lg:-right-48" aria-hidden="true"></div>
+        <Picture
+          src={hero.image}
+          formats={['avif']} fallbackFormat="webp"
+          widths={[480, 720, 900, 1200]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          alt="Oficina móvil Vexon VX-10M de 10 metros con escalera, minisplit y torres de nivelación"
+          class="arrive relative mx-auto h-auto w-full max-w-[46rem] lg:w-[115%] lg:max-w-none"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <p class="relative mr-4 mt-1 hidden text-right text-sm text-vx-slate sm:mr-0 sm:block">VX-10M: 10 m, 9 personas, 5 mesas</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. SELECTOR -->
+  <section class="bg-vx-sand py-14 sm:py-16" aria-labelledby="sel-title" id="encuentra">
+    <div class="wrap grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+      <div>
+        <h2 id="sel-title" class="text-4xl sm:text-5xl">Encuentra tu oficina en dos toques</h2>
+        <p class="lead mt-4">Dinos cuántas personas van a trabajar y si alguien necesita privado. Te mostramos el modelo exacto y lo cotizas en el mismo momento.</p>
+        <p class="mt-6 hidden text-vx-slate lg:block">¿Prefieres que te recomendemos? <button type="button" class="font-display text-vx-black underline decoration-vx-orange decoration-2 underline-offset-4" data-open-cotizador data-block="selector-ayuda">Usa el cotizador de 3 pasos</button></p>
+      </div>
+      <div class="rounded-2xl bg-white p-4 shadow-[var(--shadow-lift)] sm:p-6">
+        <Selector id="home" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. CONFIANZA -->
+  <section class="border-b border-vx-line bg-white" aria-label="Por qué confiar en Vexon">
+    <ul class="wrap grid grid-cols-2 gap-x-6 gap-y-5 py-8 lg:grid-cols-4">
+      <li class="flex items-center gap-3"><Icon name="shield" class="h-8 w-8 flex-none text-vx-orange" /><span class="text-[0.98rem]"><b class="block font-display font-medium text-vx-black">Respaldo Capelton</b>Fabricante mexicano de espacios móviles</span></li>
+      <li class="flex items-center gap-3"><Icon name="ruler" class="h-8 w-8 flex-none text-vx-orange" /><span class="text-[0.98rem]"><b class="block font-display font-medium text-vx-black">De 3 a 10 metros</b>Para 3 a 9 personas</span></li>
+      <li class="flex items-center gap-3"><Icon name="level" class="h-8 w-8 flex-none text-vx-orange" /><span class="text-[0.98rem]"><b class="block font-display font-medium text-vx-black">Torres de nivelación</b>Firme en terreno de obra</span></li>
+      <li class="flex items-center gap-3"><Icon name="pin" class="h-8 w-8 flex-none text-vx-orange" /><span class="text-[0.98rem]"><b class="block font-display font-medium text-vx-black">Base en Zapopan</b>Cerca de tu obra en la ZMG</span></li>
+    </ul>
+  </section>
+
+  <!-- 4. DOLOR → SOLUCIÓN -->
+  <section class="section bg-white" aria-labelledby="dolor-title">
+    <div class="wrap grid gap-10 lg:grid-cols-2 lg:items-center">
+      <div class="relative order-2 lg:order-1">
+        <Picture src={fotoObra} formats={['avif']} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 1024px) 560px, 92vw" alt="Dos oficinas móviles Vexon instaladas en una obra al atardecer" class="h-[26rem] w-full rounded-2xl object-cover object-[50%_62%] sm:h-[32rem]" loading="lazy" />
+      </div>
+      <div class="order-1 lg:order-2">
+        <h2 id="dolor-title" class="text-4xl sm:text-5xl">Tu obra necesita oficina antes del primer colado</h2>
+        <p class="lead mt-4">Con una oficina móvil tienes dónde trabajar desde el primer día, sin gastar tiempo ni material de la obra.</p>
+        <ul class="mt-8 grid gap-6 sm:grid-cols-2">
+          {dolores.map((d) => (
+            <li>
+              <Icon name={d.icon} class="h-7 w-7 text-vx-orange" />
+              <h3 class="mt-2 text-xl">{d.t}</h3>
+              <p class="mt-1 text-[0.98rem] text-vx-slate">{d.d}</p>
+            </li>
+          ))}
+        </ul>
+        <WaButton block="dolor" label="Resuelve tu oficina hoy" class="mt-9" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. LÍNEA VX -->
+  <section id="modelos" class="section bg-vx-sand" aria-labelledby="linea-title">
+    <div class="wrap">
+      <div class="flex flex-wrap items-end justify-between gap-5">
+        <div>
+          <h2 id="linea-title" class="text-4xl sm:text-5xl">Línea VX: 8 oficinas, una para cada obra</h2>
+          <p class="lead mt-3">Modelos M con oficina abierta y modelos P con área privada. Toca cualquiera para ver su ficha completa.</p>
+        </div>
+        <div class="flex gap-2" role="group" aria-label="Filtrar modelos" data-filter>
+          <button type="button" class="opt !min-h-11 !text-base" aria-pressed="true" data-f="all">Todos</button>
+          <button type="button" class="opt !min-h-11 !text-base" aria-pressed="false" data-f="M">Abiertas</button>
+          <button type="button" class="opt !min-h-11 !text-base" aria-pressed="false" data-f="P">Con privado</button>
+        </div>
+      </div>
+      <div class="snap-row -mx-4 mt-8 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0" data-model-row>
+        {MODELOS.map((m) => <ModelCard m={m} block="linea" class="w-[82%] flex-none xs:w-[19rem] lg:w-auto" />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. QUÉ INCLUYE -->
+  <section class="section bg-white" aria-labelledby="incluye-title">
+    <div class="wrap">
+      <h2 id="incluye-title" class="max-w-3xl text-4xl sm:text-5xl">Todo lo que trae cada oficina, punto por punto</h2>
+      <p class="lead mt-4">La misma numeración de nuestras fichas técnicas. Toca un punto del render para ver qué es.</p>
+      <div class="mt-10"><Hotspots m={hero} id="home-hs" /></div>
+      <WaButton block="incluye" label="Quiero una oficina así de equipada" class="mt-10" />
+    </div>
+  </section>
+
+  <!-- 7. COMPARADOR -->
+  <section class="section bg-vx-sand" aria-labelledby="cmp-title">
+    <div class="wrap grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+      <div>
+        <h2 id="cmp-title" class="text-4xl sm:text-5xl">¿Dudas entre dos modelos? Compáralos</h2>
+        <p class="lead mt-4">Elige cualquier par y ve sus diferencias reales: personas, mesas, privado, clima, peso y más.</p>
+      </div>
+      <Comparador block="comparador-home" />
+    </div>
+  </section>
+
+  <!-- 8. CÓMO FUNCIONA -->
+  <section class="section bg-white" aria-labelledby="como-title">
+    <div class="wrap">
+      <h2 id="como-title" class="text-4xl sm:text-5xl">Rentar tu oficina toma cuatro pasos</h2>
+      <div class="mt-10"><Steps /></div>
+      <WaButton block="como-funciona" label="Paso 1: escríbenos" class="mt-10" micro />
+    </div>
+  </section>
+
+  <!-- 9. PARA QUIÉN -->
+  <section class="section bg-vx-black text-white" aria-labelledby="quien-title">
+    <div class="wrap">
+      <h2 id="quien-title" class="text-4xl text-white sm:text-5xl">¿Para quién es una oficina móvil?</h2>
+      <p class="lead mt-4 !text-white/75">Elige tu caso y te escribimos con lo que necesitas saber.</p>
+      <ul class="mt-10 grid gap-4 sm:grid-cols-2">
+        {PERSONAS.map((p) => (
+          <li class="flex flex-col rounded-2xl bg-white/[0.06] p-6 ring-1 ring-white/10">
+            <Icon name={p.icon} class="h-8 w-8 text-vx-orange" />
+            <h3 class="mt-3 text-2xl text-white">{p.titulo}</h3>
+            <p class="mt-2 text-white/75">{p.necesidad}</p>
+            <p class="mt-3 text-sm text-white/60">Modelos sugeridos: {p.modelos.join(', ')}</p>
+            <div class="mt-auto flex flex-wrap items-center gap-4 pt-6">
+              <WaButton block={`persona-${p.key}`} persona={p.key} label={p.cta} />
+              <a href={p.href} class="font-display text-white underline decoration-vx-orange decoration-2 underline-offset-4">Ver solución</a>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 10. POR QUÉ VEXON -->
+  <section class="section bg-white" aria-labelledby="porque-title">
+    <div class="wrap">
+      <h2 id="porque-title" class="max-w-3xl text-4xl sm:text-5xl">Por qué una oficina Vexon es tu mejor opción</h2>
+      <p class="lead mt-4">Frente a las alternativas de siempre en obra.</p>
+      <div class="mt-10 overflow-x-auto rounded-2xl ring-1 ring-vx-line" tabindex="0" role="region" aria-label="Tabla comparativa, desliza para ver todas las columnas">
+        <table class="w-full min-w-[40rem] text-left">
+          <caption class="sr-only">Comparación entre oficina móvil Vexon, caseta construida y contenedor adaptado</caption>
+          <thead>
+            <tr class="bg-vx-sand font-display">
+              <th scope="col" class="w-[28%] px-4 py-4 font-medium text-vx-slate"></th>
+              <th scope="col" class="bg-vx-black px-4 py-4 text-lg font-medium text-white">Oficina móvil Vexon</th>
+              <th scope="col" class="px-4 py-4 text-lg font-medium text-vx-black">Caseta construida</th>
+              <th scope="col" class="px-4 py-4 text-lg font-medium text-vx-black">Contenedor adaptado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparativa.map((r) => (
+              <tr class="border-t border-vx-line">
+                <th scope="row" class="px-4 py-4 font-normal text-vx-slate">{r.k}</th>
+                <td class="bg-vx-orange-soft/60 px-4 py-4 font-display text-vx-black"><span class="inline-flex items-center gap-2"><Icon name="check" class="h-5 w-5 flex-none text-vx-orange" />{r.vx}</span></td>
+                <td class="px-4 py-4 text-vx-slate">{r.caseta}</td>
+                <td class="px-4 py-4 text-vx-slate">{r.cont}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <WaButton block="por-que" label="Quiero la mejor opción para mi obra" class="mt-10" />
+    </div>
+  </section>
+
+  <!-- 11. FAQ -->
+  <FaqList faqs={FAQ_HOME} block="home" bg="sand" intro="Lo que más nos preguntan antes de rentar una oficina móvil." />
+
+  <!-- 12. COBERTURA -->
+  <section class="section bg-white" aria-labelledby="cob-title">
+    <div class="wrap grid gap-10 lg:grid-cols-2 lg:items-center">
+      <div>
+        <h2 id="cob-title" class="text-4xl sm:text-5xl">Entregamos en toda la zona metropolitana de Guadalajara</h2>
+        <ul class="mt-7 flex flex-wrap gap-2">
+          {SITE.areaServed.map((c) => <li class="chip !text-base"><Icon name="pin" class="h-4 w-4 text-vx-orange" />{c}</li>)}
+        </ul>
+        <p class="mt-6 text-vx-slate">Nuestra base está en {fullAddress}</p>
+        <WaButton block="cobertura" label="¿Tu obra está en otro lugar? Confírmalo" class="mt-8" variant="dark" />
+      </div>
+      <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-vx-sand">
+        <div class="hatch absolute inset-0 opacity-30" aria-hidden="true"></div>
+        <svg viewBox="0 0 400 300" class="relative h-full w-full" role="img" aria-label="Municipios atendidos alrededor de Guadalajara">
+          <circle cx="200" cy="150" r="118" fill="none" stroke="#d1d2d0" stroke-dasharray="4 6" />
+          <circle cx="200" cy="150" r="62" fill="none" stroke="#d1d2d0" stroke-dasharray="4 6" />
+          {[
+            { n: 'Zapopan', x: 150, y: 92 },
+            { n: 'Guadalajara', x: 210, y: 140 },
+            { n: 'Tonalá', x: 300, y: 128 },
+            { n: 'Tlaquepaque', x: 236, y: 186 },
+            { n: 'Tlajomulco', x: 150, y: 238 },
+            { n: 'El Salto', x: 290, y: 232 },
+          ].map((p) => (
+            <g>
+              <circle cx={p.x} cy={p.y} r="6" fill="#f1482b" />
+              <text x={p.x + 11} y={p.y + 5} font-family="var(--font-kanit), Arial" font-size="15" fill="#0f0f10">{p.n}</text>
+            </g>
+          ))}
+          <g>
+            <rect x="96" y="54" width="64" height="22" rx="11" fill="#0f0f10" />
+            <text x="128" y="69" text-anchor="middle" font-family="var(--font-kanit), Arial" font-size="11" fill="#fff">Base Vexon</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. CTA FINAL -->
+  <section class="relative overflow-hidden bg-vx-black py-20 text-white sm:py-24" aria-labelledby="final-title" id="cotizar">
+    <div class="hatch-dark absolute inset-0" aria-hidden="true"></div>
+    <div class="wrap relative grid gap-12 lg:grid-cols-2">
+      <div>
+        <h2 id="final-title" class="text-4xl text-white sm:text-6xl">¿Arrancas obra? Tu oficina puede estar lista antes que tu primer colado.</h2>
+        <p class="lead mt-5 !text-white/75">Escríbenos por WhatsApp con el número de personas, la ubicación y la fecha. Te respondemos con el modelo ideal y la cotización.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <WaButton block="final" size="lg" micro microClass="!text-white/70" />
+          <a href={telLink} class="btn btn-ghost-light btn-lg" data-call data-block="final"><Icon name="phone" class="btn-icon" /> Llamar</a>
+        </div>
+      </div>
+      <div class="rounded-2xl bg-white/[0.06] p-5 ring-1 ring-white/15 sm:p-7">
+        <h3 class="text-2xl text-white">¿Prefieres que te llamemos?</h3>
+        <p class="mt-1 text-white/70">Deja tus datos y te contactamos en horario de atención.</p>
+        <div class="mt-5"><QuoteForm id="form-home" dark source="home" /></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14. BLOG -->
+  {posts.length > 0 && (
+    <section class="section bg-white" aria-labelledby="blog-title">
+      <div class="wrap">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <h2 id="blog-title" class="text-4xl sm:text-5xl">Guías para tu obra</h2>
+          <a href="/blog" class="font-display text-vx-black underline decoration-vx-orange decoration-2 underline-offset-4">Ver todos los artículos</a>
+        </div>
+        <ul class="mt-8 grid gap-6 md:grid-cols-3">
+          {posts.map((p) => (
+            <li class="card p-6">
+              <p class="text-sm text-vx-slate">{p.data.category}</p>
+              <h3 class="mt-2 text-xl"><a href={`/blog/${p.id}`} class="hover:underline underline-offset-4">{p.data.title}</a></h3>
+              <p class="mt-2 text-[0.98rem] text-vx-slate">{p.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-model-row] .model-card');
+  root?.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-f]');
+    if (!b) return;
+    root.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    cards.forEach((c) => (c.hidden = b.dataset.f !== 'all' && c.dataset.dist !== b.dataset.f));
+  });
+</script>

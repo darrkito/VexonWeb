@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ModelCard from '../../components/ModelCard.astro';
+import Comparador from '../../components/Comparador.astro';
+import FaqList from '../../components/FaqList.astro';
+import WaButton from '../../components/WaButton.astro';
+import Icon from '../../components/Icon.astro';
+import { MODELOS, fmtKg } from '../../data/modelos';
+import { FAQ_CATALOGO } from '../../data/faqs';
+import { SITE } from '../../lib/site';
+import { breadcrumbs, faqPage, itemList, rentalService } from '../../lib/schema';
+
+const url = `${SITE.url}/oficinas-moviles`;
+const ordered = [...MODELOS].sort((a, b) => a.largo - b.largo || a.distribucion.localeCompare(b.distribucion));
+const schema = [
+  rentalService(url),
+  breadcrumbs([{ name: 'Inicio', url: SITE.url }, { name: 'Oficinas móviles', url }]),
+  itemList(ordered.map((m) => ({ name: `Oficina móvil ${m.code}`, url: `${url}/${m.slug}` }))),
+  faqPage(FAQ_CATALOGO),
+];
+---
+<BaseLayout
+  title="Oficinas Móviles en Renta de 3 a 10 m | Vexon"
+  description="Compara los 8 modelos VX en renta: oficina abierta o con privado, de 3 a 9 personas. Specs, planos y fichas técnicas. Entrega en la zona metropolitana de Guadalajara."
+  schema={schema}
+  pageType="CollectionPage"
+  ogImage="/og/oficinas-moviles.jpg"
+>
+  <section class="bg-vx-sand pb-10 pt-4 sm:pt-6">
+    <div class="wrap">
+      <Breadcrumbs items={[{ name: 'Inicio', href: '/' }, { name: 'Oficinas móviles' }]} />
+      <div class="mt-5 grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+        <div>
+          <h1 class="text-[2.4rem] leading-[1.04] sm:text-6xl">Oficinas móviles en renta: 8 modelos de 3 a 10 metros</h1>
+          <p class="lead mt-4">Todas miden 2.5 m de ancho y traen minisplit, mesas de trabajo, iluminación LED y contactos de 127 V. Los modelos M son oficina abierta; los modelos P suman un área privada con su propio clima.</p>
+        </div>
+        <div class="flex flex-wrap gap-3 lg:justify-end">
+          <WaButton block="catalogo-hero" label="Ayúdame a elegir" size="lg" />
+          <button type="button" class="btn btn-ghost btn-lg" data-open-cotizador data-block="catalogo-hero">Cotizador de 3 pasos</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-vx-sand pb-16" aria-label="Modelos">
+    <div class="wrap">
+      <div class="sticky top-14 z-20 -mx-4 flex flex-wrap items-center gap-2 bg-vx-sand/95 px-4 py-3 backdrop-blur lg:top-[4.5rem]" role="group" aria-label="Filtrar modelos" data-cat-filter>
+        <span class="mr-1 font-display text-vx-black">Mostrar:</span>
+        <button type="button" class="opt !min-h-10 !bg-white !text-base" aria-pressed="true" data-f="all">Todos</button>
+        <button type="button" class="opt !min-h-10 !bg-white !text-base" aria-pressed="false" data-f="M">Abiertas (M)</button>
+        <button type="button" class="opt !min-h-10 !bg-white !text-base" aria-pressed="false" data-f="P">Con privado (P)</button>
+      </div>
+      <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-cat-grid>
+        {ordered.map((m) => <ModelCard m={m} block="catalogo" headingLevel="h2" />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-white" aria-labelledby="tabla-title">
+    <div class="wrap">
+      <h2 id="tabla-title" class="text-4xl sm:text-5xl">Toda la línea VX en una tabla</h2>
+      <p class="lead mt-3">Datos de las fichas técnicas oficiales.</p>
+      <div class="mt-8 overflow-x-auto rounded-2xl ring-1 ring-vx-line" tabindex="0" role="region" aria-label="Tabla de la línea VX, desliza para ver todas las columnas">
+        <table class="w-full min-w-[56rem] text-left text-[0.98rem]">
+          <caption class="sr-only">Especificaciones de los 8 modelos de oficina móvil Vexon</caption>
+          <thead class="bg-vx-black font-display text-white">
+            <tr>
+              {['Modelo', 'Tipo', 'Medidas (m)', 'Personas', 'Mesas', 'Minisplits', 'Ventanas', 'LED', 'Ejes', 'Torres', 'Peso'].map((h) => <th scope="col" class="px-3 py-3 font-medium">{h}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {ordered.map((m, i) => (
+              <tr class:list={['border-t border-vx-line', i % 2 && 'bg-vx-sand/60']}>
+                <th scope="row" class="px-3 py-3"><a href={`/oficinas-moviles/${m.slug}`} class="font-display text-lg text-vx-black underline decoration-vx-orange decoration-2 underline-offset-4">{m.code}</a></th>
+                <td class="px-3 py-3">{m.tipo}</td>
+                <td class="px-3 py-3 whitespace-nowrap">{m.largo} × {m.ancho} × {m.alto}</td>
+                <td class="px-3 py-3 font-display text-lg">{m.personas}</td>
+                <td class="px-3 py-3">{m.mesas}</td>
+                <td class="px-3 py-3">{m.minisplits}</td>
+                <td class="px-3 py-3">{m.ventanas}</td>
+                <td class="px-3 py-3">{m.lamparasLed}</td>
+                <td class="px-3 py-3">{m.ejes}</td>
+                <td class="px-3 py-3">{m.torresNivelacion}</td>
+                <td class="px-3 py-3 whitespace-nowrap">{fmtKg(m.pesoRemolqueKg)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 flex items-center gap-2 text-sm text-vx-slate"><Icon name="check" class="h-4 w-4 text-vx-orange" />Todos con contactos de 127 V, salidas de voz y datos, escalera antiderrapante y torres de nivelación. Ninguno trae sanitario ni cocineta.</p>
+    </div>
+  </section>
+
+  <section class="section bg-vx-sand" aria-labelledby="cmp-title">
+    <div class="wrap grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+      <div>
+        <h2 id="cmp-title" class="text-4xl sm:text-5xl">Compara dos modelos lado a lado</h2>
+        <p class="lead mt-4">Ideal para decidir entre oficina abierta o con privado, o entre dos tamaños.</p>
+      </div>
+      <Comparador a="vx-4m" b="vx-6m" block="comparador-catalogo" />
+    </div>
+  </section>
+
+  <FaqList faqs={FAQ_CATALOGO} block="catalogo" intro="Cómo elegir el modelo correcto para tu equipo." />
+
+  <section class="relative overflow-hidden bg-vx-black py-16 text-white" aria-labelledby="cta-cat">
+    <div class="hatch-dark absolute inset-0" aria-hidden="true"></div>
+    <div class="wrap relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <h2 id="cta-cat" class="max-w-2xl text-4xl text-white">¿No sabes cuál elegir? Dinos cuántas personas son y te recomendamos.</h2>
+      <WaButton block="catalogo-final" label="Recomiéndame un modelo" size="lg" />
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-cat-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-cat-grid] .model-card');
+  bar?.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-f]');
+    if (!b) return;
+    bar.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    cards.forEach((c) => (c.hidden = b.dataset.f !== 'all' && c.dataset.dist !== b.dataset.f));
+  });
+</script>

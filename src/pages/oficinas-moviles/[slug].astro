@@ -1,0 +1,312 @@
+---
+import { Picture } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Icon from '../../components/Icon.astro';
+import WaButton from '../../components/WaButton.astro';
+import Hotspots from '../../components/Hotspots.astro';
+import Comparador from '../../components/Comparador.astro';
+import Steps from '../../components/Steps.astro';
+import FaqList from '../../components/FaqList.astro';
+import { MODELOS, ACABADOS, fmtKg, type Modelo } from '../../data/modelos';
+import { faqsModelo } from '../../data/faqs';
+import { SITE } from '../../lib/site';
+import { telLink } from '../../lib/whatsapp';
+import { breadcrumbs, faqPage, productModelo } from '../../lib/schema';
+import fotoObra from '../../assets/fotos/oficinas-moviles-obra-atardecer.jpg';
+
+export function getStaticPaths() {
+  return MODELOS.map((m) => ({ params: { slug: m.slug }, props: { m } }));
+}
+
+const { m } = Astro.props as { m: Modelo };
+const url = `${SITE.url}/oficinas-moviles/${m.slug}`;
+const ordered = [...MODELOS].sort((a, b) => a.largo - b.largo || a.distribucion.localeCompare(b.distribucion));
+const sameDist = ordered.filter((x) => x.distribucion === m.distribucion);
+const idx = sameDist.findIndex((x) => x.slug === m.slug);
+const menor = sameDist[idx - 1];
+const mayor = sameDist[idx + 1];
+const gemelo = MODELOS.find((x) => x.largo === m.largo && x.slug !== m.slug);
+const compararCon = gemelo ?? mayor ?? menor!;
+const faqs = faqsModelo(m);
+const ogImg = `/og/${m.slug}.jpg`;
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.model === m.slug)).slice(0, 3);
+const fallbackPosts = posts.length ? posts : (await getCollection('blog', ({ data }) => !data.draft)).slice(0, 3);
+
+const title = `Renta Oficina Móvil ${m.code}: ${m.largo} m, ${m.personas} Personas | Vexon`;
+const description = `Oficina móvil de ${m.largo} × ${m.ancho} m con ${m.mesas} mesas de trabajo, ${m.minisplits === 1 ? 'minisplit' : '2 minisplits'}, ${m.lamparasLed} lámparas LED y contactos de 127 V${m.areaPrivada ? ', con área privada' : ''}. Ficha técnica, plano y renta en Guadalajara.`;
+
+const grupos = [
+  {
+    t: 'Dimensiones', icon: 'ruler',
+    items: [['Largo', `${m.largo} m`], ['Ancho', `${m.ancho} m`], ['Alto', `${m.alto} m`]],
+  },
+  {
+    t: 'Capacidad', icon: 'users',
+    items: [['Personas (sugerida)', String(m.personas)], ['Mesas de trabajo', String(m.mesas)], ['Área privada', m.areaPrivada ? 'Sí, 1' : 'No']],
+  },
+  {
+    t: 'Confort y conexiones', icon: 'snow',
+    items: [['Minisplits', String(m.minisplits)], ['Ventanas', String(m.ventanas)], ['Lámparas LED', String(m.lamparasLed)], ['Contactos 127 V', 'Sí'], ['Salidas de voz y datos', 'Sí']],
+  },
+  {
+    t: 'Distribución', icon: 'door',
+    items: [['Tipo', m.tipo], ['Accesos', String(m.accesos)], ['Sanitario', 'No incluido'], ['Cocineta', 'No incluida']],
+  },
+  {
+    t: 'Remolque', icon: 'truck',
+    items: [['Ejes', String(m.ejes)], ['Torres de nivelación', String(m.torresNivelacion)], ['Gato mecánico', 'Sí'], ['Luces de navegación', 'Sí'], ['Peso del remolque', fmtKg(m.pesoRemolqueKg)], ['Capacidad de carga', fmtKg(m.capacidadCargaKg)]],
+  },
+] as const;
+
+const schema = [
+  productModelo(m, url, `${SITE.url}/og/${m.slug}.jpg`),
+  breadcrumbs([
+    { name: 'Inicio', url: SITE.url },
+    { name: 'Oficinas móviles', url: `${SITE.url}/oficinas-moviles` },
+    { name: m.code, url },
+  ]),
+  faqPage(faqs),
+];
+const anchors = [
+  ['resumen', 'Resumen'], ['specs', 'Specs'], ['plano', 'Plano'], ['equipo', 'Equipo'], ['acabados', 'Acabados'], ['ideal', 'Ideal para'], ['preguntas', 'FAQ'],
+];
+---
+<BaseLayout
+  title={title}
+  description={description}
+  schema={schema}
+  ogImage={ogImg}
+  ogType="product"
+  pageType="ItemPage"
+  model={m.code}
+>
+  <div class="bg-vx-sand">
+    <div class="wrap pb-10 pt-4 sm:pt-6 lg:pb-14" id="resumen">
+      <Breadcrumbs items={[{ name: 'Inicio', href: '/' }, { name: 'Oficinas móviles', href: '/oficinas-moviles' }, { name: m.code }]} />
+      <div class="mt-4 grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:items-start">
+        <div>
+          <div class="gallery relative overflow-hidden rounded-2xl bg-white">
+            <div class="snap-row !gap-0 !pb-0" data-gallery tabindex="0" role="region" aria-label={`Galería de la ${m.code}: render, plano y foto en obra`}>
+              <figure class="relative w-full flex-none px-4 pb-3 pt-5 sm:pt-8">
+                <span class="hatch absolute inset-y-0 right-0 w-1/2 opacity-50" aria-hidden="true"></span>
+                <Picture src={m.image} formats={['avif']} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 1024px) 720px, 100vw" alt={`Oficina móvil ${m.code} de ${m.largo} metros con escalera y torres de nivelación`} class="relative mx-auto h-48 w-auto object-contain sm:h-80" loading="eager" fetchpriority="high" style={`view-transition-name: ${m.slug}`} />
+                <figcaption class="sr-only">Render de la {m.code}</figcaption>
+              </figure>
+              <figure class="w-full flex-none bg-white px-4 py-4">
+                <img src={m.plan} alt={`Plano en planta de la ${m.code} con medidas en metros`} class="mx-auto h-48 w-auto sm:h-80" width={m.planSize[0]} height={m.planSize[1]} loading="lazy" decoding="async" />
+                <figcaption class="sr-only">Plano en planta</figcaption>
+              </figure>
+              <figure class="w-full flex-none">
+                <Picture src={fotoObra} formats={['avif']} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 1024px) 720px, 100vw" alt="Oficinas móviles Vexon instaladas en una obra" class="h-[15rem] w-full object-cover object-[50%_62%] sm:h-[22rem]" loading="lazy" />
+                <figcaption class="sr-only">Oficinas Vexon en obra</figcaption>
+              </figure>
+            </div>
+            <div class="flex justify-center gap-1.5 border-t border-vx-sand bg-white px-2 py-2" data-gallery-dots>
+              {['Render', 'Plano', 'En obra'].map((l, i) => <button type="button" class:list={['rounded-full px-3 py-1 text-sm font-display', i === 0 ? 'bg-vx-black text-white' : 'text-vx-black']} data-i={i} aria-label={`Ver ${l}`}>{l}</button>)}
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:sticky lg:top-24">
+          <span class:list={['inline-block rounded-full px-3 py-1 text-sm font-display', m.distribucion === 'P' ? 'bg-vx-black text-white' : 'bg-white text-vx-black']}>{m.tipo}</span>
+          <h1 class="mt-3 text-[2rem] leading-[1.05] sm:text-[2.6rem]">
+            <span class="model-code block text-[3.4rem] leading-none sm:text-[4.2rem]">{m.code}</span>
+            <span class="mt-2 block">Renta de oficina móvil de {m.largo} metros para {m.personas} personas</span>
+          </h1>
+          <p class="mt-4 text-[1.05rem] text-vx-slate">{m.respuesta}</p>
+          <ul class="mt-5 flex flex-wrap gap-2">
+            <li class="chip"><Icon name="ruler" class="h-4 w-4 text-vx-orange" />{m.largo} × {m.ancho} m</li>
+            <li class="chip"><Icon name="users" class="h-4 w-4 text-vx-orange" />{m.personas} personas</li>
+            <li class="chip"><Icon name="desk" class="h-4 w-4 text-vx-orange" />{m.mesas} mesas</li>
+            <li class="chip"><Icon name="snow" class="h-4 w-4 text-vx-orange" />{m.minisplits === 1 ? '1 minisplit' : '2 minisplits'}</li>
+            <li class="chip"><Icon name="bolt" class="h-4 w-4 text-vx-orange" />127 V</li>
+            {m.areaPrivada > 0 && <li class="chip"><Icon name="lock" class="h-4 w-4 text-vx-orange" />Área privada</li>}
+          </ul>
+          <div class="mt-6 grid gap-3 sm:flex sm:flex-wrap">
+            <WaButton block="modelo-hero" model={m.code} people={String(m.personas)} label={`Cotizar la ${m.code}`} size="lg" class="sm:flex-1 [&>a]:w-full" />
+            <a href={telLink} class="btn btn-ghost btn-lg" data-call data-block="modelo-hero"><Icon name="phone" class="btn-icon" /> Llamar</a>
+          </div>
+          <p class="microcopy mt-3">Sin compromiso. Te respondemos por WhatsApp en horario de atención.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sticky top-14 z-30 border-b border-vx-line bg-white/95 backdrop-blur lg:top-[4.5rem]" aria-label="Secciones del modelo">
+    <ul class="wrap flex gap-1 overflow-x-auto py-2 [scrollbar-width:none]">
+      {anchors.map(([id, l]) => <li class="flex-none"><a href={`#${id}`} class="inline-flex min-h-10 items-center rounded-full px-3.5 font-display text-[0.98rem] text-vx-black hover:bg-vx-sand">{l}</a></li>)}
+    </ul>
+  </nav>
+
+  <!-- ESPECIFICACIONES -->
+  <section id="specs" class="section bg-white" aria-labelledby="specs-title">
+    <div class="wrap">
+      <h2 id="specs-title" class="text-4xl sm:text-5xl">Especificaciones de la {m.code}</h2>
+      <p class="lead mt-3">Todo lo de la ficha técnica, a la vista.</p>
+      <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {grupos.map((g) => (
+          <div class="card overflow-hidden">
+            <h3 class="flex items-center gap-2.5 bg-vx-sand px-4 py-3 text-lg"><Icon name={g.icon} class="h-5 w-5 text-vx-orange" />{g.t}</h3>
+            <dl class="divide-y divide-vx-line">
+              {g.items.map(([k, v]) => (
+                <div class="flex items-baseline justify-between gap-4 px-4 py-3">
+                  <dt class="text-[0.98rem] text-vx-slate">{k}</dt>
+                  <dd class="text-right font-display text-lg text-vx-black">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ))}
+        <div class="flex flex-col justify-between rounded-[var(--radius-card)] bg-vx-black p-6 text-white">
+          <div>
+            <p class="font-display text-2xl text-white">¿Es la que necesitas?</p>
+            <p class="mt-2 text-white/75">Escríbenos con la ubicación de tu obra y la fecha de inicio. Te respondemos con la cotización de la {m.code}.</p>
+          </div>
+          <WaButton block="modelo-specs" model={m.code} people={String(m.personas)} label="Esta es la que necesito" class="mt-6 [&>a]:w-full" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANO -->
+  <section id="plano" class="section bg-vx-sand" aria-labelledby="plano-title">
+    <div class="wrap grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+      <div class="order-2 rounded-2xl bg-white p-6 lg:order-1">
+        <img src={m.plan} alt={`Plano en planta de la oficina móvil ${m.code}, ${m.largo} × ${m.ancho} m`} class="mx-auto h-[28rem] w-auto sm:h-[34rem]" width={m.planSize[0]} height={m.planSize[1]} loading="lazy" decoding="async" />
+      </div>
+      <div class="order-1 lg:order-2">
+        <h2 id="plano-title" class="text-4xl sm:text-5xl">Plano y distribución</h2>
+        <p class="lead mt-4">
+          {m.largo} m de largo por {m.ancho} m de ancho, más 1.15 m de lanza del remolque.
+          {m.areaPrivada ? ` El área privada mide 2.50 m de largo y tiene su propio minisplit.` : ` Un solo espacio abierto con ${m.mesas} mesas de trabajo a lo largo del muro.`}
+        </p>
+        <ul class="mt-6 grid gap-3">
+          <li class="flex items-center gap-3"><span class="pin">1</span><span><b class="font-display font-medium text-vx-black">Mesas de trabajo:</b> {m.mesas} en total</span></li>
+          <li class="flex items-center gap-3"><span class="pin">2</span><span><b class="font-display font-medium text-vx-black">Aire acondicionado:</b> {m.minisplits === 1 ? '1 minisplit' : '1 minisplit en el área abierta y 1 en el privado'}</span></li>
+          <li class="flex items-center gap-3"><span class="pin !bg-vx-black">14</span><span><b class="font-display font-medium text-vx-black">Salidas de voz y datos</b> para internet y teléfono</span></li>
+        </ul>
+        <WaButton block="modelo-plano" model={m.code} people={String(m.personas)} label={`Quiero esta distribución`} class="mt-8" />
+      </div>
+    </div>
+  </section>
+
+  <!-- EQUIPAMIENTO -->
+  <section id="equipo" class="section bg-white" aria-labelledby="equipo-title">
+    <div class="wrap">
+      <h2 id="equipo-title" class="text-4xl sm:text-5xl">Equipamiento, punto por punto</h2>
+      <p class="lead mt-3">Misma numeración que la ficha técnica. Toca un punto del render.</p>
+      <div class="mt-10"><Hotspots m={m} id={`${m.slug}-hs`} /></div>
+    </div>
+  </section>
+
+  <!-- ACABADOS -->
+  <section id="acabados" class="section bg-vx-sand" aria-labelledby="acabados-title">
+    <div class="wrap">
+      <h2 id="acabados-title" class="text-4xl sm:text-5xl">Acabados interiores</h2>
+      <ul class="mt-10 grid gap-4 sm:grid-cols-3">
+        {ACABADOS.map((a, i) => (
+          <li class="card flex gap-4 p-5">
+            <span class:list={['h-14 w-14 flex-none rounded-full ring-1 ring-vx-line', i === 0 ? 'bg-white' : i === 1 ? 'bg-vx-black' : 'bg-[linear-gradient(135deg,#d9d7d2,#b9b6ae_45%,#e6e4df)]']} aria-hidden="true"></span>
+            <span><b class="block font-display text-lg font-medium text-vx-black">{a.nombre}</b><span class="text-[0.98rem] text-vx-slate">{a.detalle}</span></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- IDEAL PARA -->
+  <section id="ideal" class="section bg-white" aria-labelledby="ideal-title">
+    <div class="wrap">
+      <h2 id="ideal-title" class="text-4xl sm:text-5xl">¿Para quién es la {m.code}?</h2>
+      <ul class="mt-10 grid gap-5 md:grid-cols-2">
+        {m.idealPara.map((p) => (
+          <li class="card flex flex-col p-6">
+            <h3 class="text-2xl">{p.titulo}</h3>
+            <p class="mt-2 text-vx-slate">{p.texto}</p>
+            <WaButton block={`modelo-ideal-${p.persona}`} persona={p.persona} model={m.code} label="Es mi caso, cotizar" class="mt-6" variant="dark" />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- CÓMO FUNCIONA LA RENTA -->
+  <section class="section bg-vx-sand" aria-labelledby="renta-title">
+    <div class="wrap">
+      <h2 id="renta-title" class="text-4xl sm:text-5xl">Así funciona la renta</h2>
+      <p class="lead mt-3">La oficina llega equipada. En la cotización te detallamos traslado, instalación y recolección para tu obra.</p>
+      <div class="mt-10"><Steps /></div>
+    </div>
+  </section>
+
+  <!-- COMPARA -->
+  <section class="section bg-white" aria-labelledby="compara-title">
+    <div class="wrap grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+      <div>
+        <h2 id="compara-title" class="text-4xl sm:text-5xl">Compara antes de decidir</h2>
+        <p class="lead mt-4">La {m.code} frente a la {compararCon.code}. Cambia cualquiera de los dos para comparar otro modelo.</p>
+        <div class="mt-6 grid gap-3">
+          {menor && <a href={`/oficinas-moviles/${menor.slug}`} class="card flex items-center justify-between gap-4 p-4 hover:bg-vx-sand"><span><span class="block text-sm text-vx-slate">¿Necesitas menos espacio?</span><span class="font-display text-xl text-vx-black">{menor.code} · {menor.personas} personas</span></span><Icon name="arrow" class="h-5 w-5 rotate-180" /></a>}
+          {mayor && <a href={`/oficinas-moviles/${mayor.slug}`} class="card flex items-center justify-between gap-4 p-4 hover:bg-vx-sand"><span><span class="block text-sm text-vx-slate">¿Necesitas más espacio?</span><span class="font-display text-xl text-vx-black">{mayor.code} · {mayor.personas} personas</span></span><Icon name="arrow" class="h-5 w-5" /></a>}
+        </div>
+      </div>
+      <Comparador a={m.slug} b={compararCon.slug} block="comparador-modelo" />
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <FaqList faqs={faqs} title={`Preguntas sobre la ${m.code}`} block="modelo" model={m.code} bg="sand" />
+
+  <!-- CTA FINAL -->
+  <section class="relative overflow-hidden bg-vx-black py-16 text-white sm:py-20" aria-labelledby="final-title">
+    <div class="hatch-dark absolute inset-0" aria-hidden="true"></div>
+    <div class="wrap relative">
+      <h2 id="final-title" class="max-w-3xl text-4xl text-white sm:text-5xl">¿Lista para tu obra? Cotiza la {m.code} por WhatsApp</h2>
+      <p class="lead mt-4 !text-white/75">Mándanos la ubicación de la obra, la fecha de inicio y el tiempo aproximado de renta.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <WaButton block="modelo-final" model={m.code} people={String(m.personas)} label={`Cotizar la ${m.code}`} size="lg" />
+        <a href={telLink} class="btn btn-ghost-light btn-lg" data-call data-block="modelo-final"><Icon name="phone" class="btn-icon" /> Llamar al {SITE.phoneDisplay}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÚLTIMA OPCIÓN: PDF y compartir -->
+  <section class="bg-white py-12" aria-labelledby="ficha-title">
+    <div class="wrap">
+      <div class="flex flex-col gap-5 rounded-2xl bg-vx-sand p-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 id="ficha-title" class="text-2xl">Ficha técnica de la {m.code}</h2>
+          <p class="mt-1 text-vx-slate">Toda la información de esta página en un PDF para tu expediente, o comparte el enlace con tu equipo.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <a href={m.ficha} class="btn btn-ghost" download data-ficha data-model={m.code}><Icon name="download" class="btn-icon" /> Descargar PDF</a>
+          <a href={`/oficinas-moviles/${m.slug}`} class="btn btn-ghost" data-share data-model={m.code} data-share-text={`Oficina móvil ${m.code}: ${m.largo} m, ${m.personas} personas. Ficha completa:`}><Icon name="share" class="btn-icon" /> <span data-share-label>Compartir este modelo</span></a>
+        </div>
+      </div>
+      {fallbackPosts.length > 0 && (
+        <div class="mt-12">
+          <h2 class="text-2xl">Artículos relacionados</h2>
+          <ul class="mt-4 grid gap-4 md:grid-cols-3">
+            {fallbackPosts.map((p) => <li class="card p-5"><a href={`/blog/${p.id}`} class="font-display text-lg text-vx-black hover:underline underline-offset-4">{p.data.title}</a></li>)}
+          </ul>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.gallery').forEach((g) => {
+    const row = g.querySelector<HTMLElement>('[data-gallery]')!;
+    const dots = g.querySelectorAll<HTMLButtonElement>('[data-gallery-dots] button');
+    const setActive = (i: number) => dots.forEach((d, j) => {
+      d.classList.toggle('bg-vx-black', i === j);
+      d.classList.toggle('text-white', i === j);
+      d.classList.toggle('text-vx-black', i !== j);
+    });
+    dots.forEach((d) => d.addEventListener('click', () => row.scrollTo({ left: row.clientWidth * Number(d.dataset.i), behavior: 'smooth' })));
+    row.addEventListener('scroll', () => setActive(Math.round(row.scrollLeft / row.clientWidth)), { passive: true });
+  });
+</script>
