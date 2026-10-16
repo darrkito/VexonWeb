@@ -35,7 +35,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.mod
 const fallbackPosts = posts.length ? posts : (await getCollection('blog', ({ data }) => !data.draft)).slice(0, 3);
 
 const title = `Renta Oficina Móvil ${m.code}: ${m.largo} m, ${m.personas} Personas | Vexon`;
-const description = `Oficina móvil de ${m.largo} × ${m.ancho} m con ${m.mesas} mesas de trabajo, ${m.minisplits === 1 ? 'minisplit' : '2 minisplits'}, ${m.lamparasLed} lámparas LED y contactos de 127 V${m.areaPrivada ? ', con área privada' : ''}. Ficha técnica, plano y renta en Guadalajara.`;
+const description = `Oficina móvil de ${m.largo} × ${m.ancho} m con ${m.mesas} mesas de trabajo, ${m.minisplits === 1 ? 'minisplit' : '2 minisplits'}, ${m.lamparasLed} lámparas LED y contactos de 127 V${m.areaPrivada ? ', con área privada' : ''}. Ficha, plano y renta en Guadalajara.`;
 
 const grupos = [
   {

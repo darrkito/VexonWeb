@@ -5,6 +5,21 @@ import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 import node from '@astrojs/node';
 import tailwindcss from '@tailwindcss/vite';
+import { readFileSync, readdirSync } from 'node:fs';
+import { execSync } from 'node:child_process';
+
+// lastmod real: blog = `updated`/`date` del frontmatter; resto = último commit que toca el sitio (si git está disponible).
+const blogDates = Object.fromEntries(
+  readdirSync('./src/content/blog').filter((f) => f.endsWith('.mdx')).map((f) => {
+    const fm = readFileSync(`./src/content/blog/${f}`, 'utf8');
+    const d = fm.match(/^updated:\s*(\S+)/m)?.[1] ?? fm.match(/^date:\s*(\S+)/m)?.[1];
+    return [f.replace(/\.mdx$/, ''), d];
+  }),
+);
+let siteLastmod;
+try {
+  siteLastmod = execSync('git log -1 --format=%cI -- src public', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim() || undefined;
+} catch {}
 
 // En Vercel se usa su adaptador; en local (o cualquier servidor Node) el adaptador de Node.
 const adapter = process.env.VERCEL
@@ -24,6 +39,12 @@ export default defineConfig({
     mdx(),
     sitemap({
       filter: (page) => !/\/(gracias|404|api)(\/|$)/.test(page),
+      serialize(item) {
+        const slug = item.url.match(/\/blog\/([^/]+)$/)?.[1];
+        const d = slug ? blogDates[slug] : siteLastmod;
+        if (d) item.lastmod = new Date(d).toISOString();
+        return item;
+      },
       i18n: { defaultLocale: 'es', locales: { es: 'es-MX' } },
     }),
   ],
