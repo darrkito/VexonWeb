@@ -15,6 +15,7 @@ import { SITE } from '../../lib/site';
 import { telLink } from '../../lib/whatsapp';
 import { breadcrumbs, faqPage, productModelo } from '../../lib/schema';
 import fotoObra from '../../assets/fotos/oficinas-moviles-obra-atardecer.jpg';
+import fotoPortada from '../../assets/fotos/oficina-movil-obra-portada.jpg';
 
 export function getStaticPaths() {
   return MODELOS.map((m) => ({ params: { slug: m.slug }, props: { m } }));
@@ -82,7 +83,9 @@ const anchors = [
   pageType="ItemPage"
   model={m.code}
 >
-  <div class="bg-vx-sand">
+  <div class="relative isolate overflow-hidden bg-vx-paper">
+    <div class="bg-grid -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none absolute -right-32 -top-32 -z-10 h-[36rem] w-[36rem]" aria-hidden="true"></div>
     <div class="wrap pb-10 pt-4 sm:pt-6 lg:pb-14" id="resumen">
       <Breadcrumbs items={[{ name: 'Inicio', href: '/' }, { name: 'Oficinas móviles', href: '/oficinas-moviles' }, { name: m.code }]} />
       <div class="mt-4 grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:items-start">
@@ -90,7 +93,8 @@ const anchors = [
           <div class="gallery relative overflow-hidden rounded-2xl bg-white">
             <div class="snap-row !gap-0 !pb-0" data-gallery tabindex="0" role="region" aria-label={`Galería de la ${m.code}: render, plano y foto en obra`}>
               <figure class="relative w-full flex-none px-4 pb-3 pt-5 sm:pt-8">
-                <span class="hatch absolute inset-y-0 right-0 w-1/2 opacity-50" aria-hidden="true"></span>
+                <span class="hatch pointer-events-none absolute inset-y-0 right-0 w-1/2 opacity-50" aria-hidden="true"></span>
+                <div class="pointer-events-none absolute inset-x-[10%] bottom-[4%] h-6" style="background: radial-gradient(closest-side, rgb(15 15 16 / .22), transparent)" aria-hidden="true"></div>
                 <Picture src={m.image} formats={['avif']} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 1024px) 720px, 100vw" alt={`Oficina móvil ${m.code} de ${m.largo} metros con escalera y torres de nivelación`} class="relative mx-auto h-48 w-auto object-contain sm:h-80" loading="eager" fetchpriority="high" style={`view-transition-name: ${m.slug}`} />
                 <figcaption class="sr-only">Render de la {m.code}</figcaption>
               </figure>
@@ -135,9 +139,14 @@ const anchors = [
   </div>
 
   <nav class="sticky top-14 z-30 border-b border-vx-line bg-white/95 backdrop-blur lg:top-[4.5rem]" aria-label="Secciones del modelo">
-    <ul class="wrap flex gap-1 overflow-x-auto py-2 [scrollbar-width:none]">
+    <div class="wrap flex min-w-0 items-center gap-3">
+      <span class="model-code flex-none text-xl">{m.code}</span>
+      <span class="hidden flex-none font-mono text-xs text-vx-slate sm:inline">{m.largo} × {m.ancho} × {m.alto} m</span>
+      <span class="chip hidden flex-none sm:inline-flex">{m.tipo}</span>
+    <ul class="flex min-w-0 gap-1 overflow-x-auto py-2 [scrollbar-width:none]">
       {anchors.map(([id, l]) => <li class="flex-none"><a href={`#${id}`} class="inline-flex min-h-10 items-center rounded-full px-3.5 font-display text-[0.98rem] text-vx-black hover:bg-vx-sand">{l}</a></li>)}
     </ul>
+    </div>
   </nav>
 
   <!-- ESPECIFICACIONES -->
@@ -149,11 +158,12 @@ const anchors = [
         {grupos.map((g) => (
           <div class="card overflow-hidden">
             <h3 class="flex items-center gap-2.5 bg-vx-sand px-4 py-3 text-lg"><Icon name={g.icon} class="h-5 w-5 text-vx-orange" />{g.t}</h3>
-            <dl class="divide-y divide-vx-line">
+            <dl class="grid gap-2 bg-vx-sand/60 p-3">
               {g.items.map(([k, v]) => (
-                <div class="flex items-baseline justify-between gap-4 px-4 py-3">
-                  <dt class="text-[0.98rem] text-vx-slate">{k}</dt>
-                  <dd class="text-right font-display text-lg text-vx-black">{v}</dd>
+                <div class="tile flex items-center gap-3">
+                  <Icon name={k === 'Largo' || k === 'Ancho' || k === 'Alto' ? 'ruler' : k === 'Personas (sugerida)' ? 'users' : k === 'Mesas de trabajo' ? 'desk' : k === 'Torres de nivelación' ? 'level' : k === 'Ejes' ? 'truck' : k === 'Minisplits' ? 'snow' : k === 'Área privada' ? 'lock' : 'check'} class="pointer-events-none h-5 w-5 flex-none text-vx-orange-text" />
+                  <dt class="spec-label flex-1 text-[0.98rem] text-vx-slate">{k}</dt>
+                  <dd class="spec-value text-right font-display text-lg text-vx-black">{v}</dd>
                 </div>
               ))}
             </dl>
@@ -173,7 +183,8 @@ const anchors = [
   <!-- PLANO -->
   <section id="plano" class="section bg-vx-sand" aria-labelledby="plano-title">
     <div class="wrap grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-      <div class="order-2 rounded-2xl bg-white p-6 lg:order-1">
+      <div class="glass relative isolate order-2 overflow-hidden p-6 lg:order-1">
+        <div class="bg-grid -z-10" aria-hidden="true"></div>
         <img src={m.plan} alt={`Plano en planta de la oficina móvil ${m.code}, ${m.largo} × ${m.ancho} m`} class="mx-auto h-[28rem] w-auto sm:h-[34rem]" width={m.planSize[0]} height={m.planSize[1]} loading="lazy" decoding="async" />
       </div>
       <div class="order-1 lg:order-2">
@@ -261,7 +272,12 @@ const anchors = [
 
   <!-- CTA FINAL -->
   <section class="relative overflow-hidden bg-vx-black py-16 text-white sm:py-20" aria-labelledby="final-title">
-    <div class="hatch-dark absolute inset-0" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-3/5" aria-hidden="true">
+      <Picture src={fotoPortada} formats={['avif']} fallbackFormat="webp" widths={[720, 1100]} sizes="100vw" alt="" loading="lazy" decoding="async" class="photo-fade opacity-[.22]" />
+      <div class="absolute inset-0 bg-gradient-to-r from-vx-black via-vx-black/80 to-transparent"></div>
+    </div>
+    <div class="hatch-dark pointer-events-none absolute inset-0" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none bottom-[-10rem] right-[-6rem] h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap relative">
       <h2 id="final-title" class="max-w-3xl text-4xl text-white sm:text-5xl">¿Lista para tu obra? Cotiza la {m.code} por WhatsApp</h2>
       <p class="lead mt-4 !text-white/75">Mándanos la ubicación de la obra, la fecha de inicio y el tiempo aproximado de renta.</p>
@@ -273,7 +289,10 @@ const anchors = [
   </section>
 
   <!-- ÚLTIMA OPCIÓN: PDF y compartir -->
-  <section class="bg-white py-12" aria-labelledby="ficha-title">
+  <section class="relative isolate overflow-hidden bg-vx-paper py-12" aria-labelledby="ficha-title">
+    <div class="pointer-events-none absolute inset-y-0 right-0 -z-10 w-full sm:w-3/5" aria-hidden="true"><Picture src={fotoObra} formats={['avif']} fallbackFormat="webp" widths={[720, 1100]} sizes="100vw" alt="" loading="lazy" decoding="async" class="photo-fade opacity-[.10]" /></div>
+    <div class="bg-grid -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -right-24 bottom-0 -z-10 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap">
       <div class="flex flex-col gap-5 rounded-2xl bg-vx-sand p-6 sm:flex-row sm:items-center sm:justify-between">
         <div>

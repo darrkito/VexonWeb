@@ -7,7 +7,7 @@ const path = Astro.url.pathname;
 const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href.split('/').slice(0, 2).join('/')));
 ---
 <a href="#contenido" class="sr-only-focusable fixed left-3 top-3 z-[60] btn btn-dark">Saltar al contenido</a>
-<header class="site-header sticky top-0 z-40 border-b border-transparent bg-white/92 backdrop-blur-md transition-[border-color,box-shadow]" data-header>
+<header class="site-header sticky top-0 z-40 border-b border-transparent bg-white/85 backdrop-blur-xl transition-[border-color,box-shadow]" data-header>
   <div class="wrap flex h-14 items-center justify-between gap-4 lg:h-[4.5rem]">
     <a href="/" class="flex items-center" aria-label="Vexon by Capelton, inicio">
       <Logo class="h-[1.9rem] w-auto lg:h-9" />
@@ -16,14 +16,14 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
       {NAV.map((item) => (
         <a
           href={item.href}
-          class:list={['rounded-full px-3.5 py-2 font-display text-[1.02rem] text-vx-ink hover:bg-vx-sand', isActive(item.href) && 'bg-vx-sand text-vx-black']}
+          class:list={['rounded-full px-3.5 py-2 font-display text-[1.02rem] text-vx-ink hover:bg-vx-sand', isActive(item.href) && 'relative bg-vx-sand text-vx-black after:pointer-events-none after:absolute after:-bottom-0.5 after:left-1/2 after:h-[5px] after:w-[5px] after:-translate-x-1/2 after:rounded-full after:bg-vx-orange after:content-[""]']}
           aria-current={isActive(item.href) ? 'page' : undefined}
         >{item.label}</a>
       ))}
     </nav>
     <div class="flex items-center gap-2">
-      <a href={telLink} class="hidden items-center gap-2 rounded-full px-3 py-2 font-display text-vx-black hover:bg-vx-sand xl:inline-flex" data-call data-block="header">
-        <Icon name="phone" class="h-5 w-5" /> {SITE.phoneDisplay}
+      <a href={telLink} class="hidden items-center gap-2 rounded-full bg-white/80 px-3.5 py-2 font-display text-vx-black ring-1 ring-vx-line hover:bg-vx-sand xl:inline-flex" data-call data-block="header">
+        <span class="grid h-8 w-8 place-items-center rounded-full bg-vx-orange-soft"><Icon name="phone" class="h-5 w-5" /></span> {SITE.phoneDisplay}
       </a>
       <a href={buildWhatsAppLink()} target="_blank" rel="noopener" class="btn btn-wa hidden !min-h-11 sm:inline-flex" data-wa data-block="header">
         <Icon name="whatsapp" class="btn-icon" /> Cotizar por WhatsApp

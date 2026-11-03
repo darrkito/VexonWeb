@@ -1,0 +1,20 @@
+---
+import Icon from './Icon.astro';
+import { buildWhatsAppLink } from '../lib/whatsapp';
+interface Props { model?: string }
+const { model } = Astro.props;
+---
+<a href={buildWhatsAppLink({ model })} target="_blank" rel="noopener" data-wa data-block="fab" data-model={model} aria-label="Cotizar por WhatsApp" class="wa-fab halo fixed bottom-6 right-6 z-40 hidden h-14 w-14 place-items-center rounded-full bg-vx-orange text-vx-black shadow-float lg:grid">
+  <Icon name="whatsapp" class="relative h-7 w-7" />
+</a>
+<style>
+  .wa-fab { visibility: hidden; opacity: 0; transform: translateY(0.75rem); pointer-events: none; }
+  .wa-fab.is-visible { visibility: visible; opacity: 1; transform: translateY(0); pointer-events: auto; }
+  @media (prefers-reduced-motion: no-preference) { .wa-fab { transition: opacity .2s, transform .2s, visibility .2s; } }
+</style>
+<script>
+  const updateFab = () => document.querySelector<HTMLElement>('.wa-fab')?.classList.toggle('is-visible', window.scrollY > 600);
+  addEventListener('scroll', updateFab, { passive: true });
+  document.addEventListener('astro:page-load', updateFab);
+  updateFab();
+</script>

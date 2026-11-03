@@ -5,8 +5,19 @@ import { MODELOS } from '../data/modelos';
 import { buildWhatsAppLink, telLink } from '../lib/whatsapp';
 const year = new Date().getFullYear();
 ---
-<footer class="bg-vx-black pb-28 pt-16 text-white/80 lg:pb-12">
-  <div class="wrap grid gap-12 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
+<footer class="relative overflow-hidden bg-vx-black pb-28 pt-16 text-white/80 lg:pb-12">
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="bg-grid-dark"></div>
+    <div class="hatch-dark absolute inset-0 opacity-30" style="mask-image: radial-gradient(ellipse at center, #000, transparent); -webkit-mask-image: radial-gradient(ellipse at center, #000, transparent)"></div>
+    <div class="bg-glow bottom-[-14rem] right-[-8rem] h-[36rem] w-[36rem]"></div>
+    {[[6, 28, '4.8s', '4.4s'], [34, 62, '5.5s', '5.1s'], [58, 40, '4.2s', '5.8s'], [82, 74, '5s', '4.7s']].map(([left, top, duration, beamDuration]) => (
+      <div class="breathe absolute bottom-0 top-0 w-px" style={`left:${left}%; animation-duration:${duration}; background:linear-gradient(to bottom, transparent, rgb(241 72 43 / .5), transparent)`}>
+        <div class="beam absolute -left-px top-0 h-28 w-[3px] rounded-full bg-gradient-to-b from-transparent via-vx-orange to-transparent" style={`animation-duration:${beamDuration}`}></div>
+        <div class="absolute -left-[3.5px] h-2 w-2 rounded-full bg-vx-orange" style={`top:${top}%`}></div>
+      </div>
+    ))}
+  </div>
+  <div class="wrap relative z-10 grid gap-12 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
     <div>
       <img src="/brand/vexon-logo-white.svg" alt="Vexon by Capelton" width="192" height="43" class="h-10 w-auto" loading="lazy" decoding="async" />
       <p class="mt-5 max-w-xs text-[0.98rem]">Renta de oficinas móviles para obra, remodelación e industria en Guadalajara y su zona metropolitana.</p>
@@ -41,7 +52,7 @@ const year = new Date().getFullYear();
       </address>
     </div>
   </div>
-  <div class="wrap mt-14 flex flex-col gap-3 border-t border-white/15 pt-6 text-sm text-white/60 sm:flex-row sm:items-center sm:justify-between">
+  <div class="wrap relative z-10 mt-14 flex flex-col gap-3 border-t border-white/15 pt-6 text-sm text-white/60 sm:flex-row sm:items-center sm:justify-between">
     <p>© {year} {SITE.name}. Respaldado por <a href={SITE.parent.url} target="_blank" rel="noopener" class="underline underline-offset-4 hover:text-white">Capelton</a>.</p>
     <p class="flex gap-5"><a href="/aviso-de-privacidad" class="hover:text-white">Aviso de privacidad</a><a href="/sitemap-index.xml" class="hover:text-white">Mapa del sitio</a></p>
   </div>

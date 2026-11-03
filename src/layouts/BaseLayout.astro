@@ -4,6 +4,7 @@ import { Font } from 'astro:assets';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import BottomBar from '../components/BottomBar.astro';
+import WaFab from '../components/WaFab.astro';
 import Cotizador from '../components/Cotizador.astro';
 import IconSprite from '../components/IconSprite.astro';
 import { SITE } from '../lib/site';
@@ -88,6 +89,7 @@ const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
     </main>
     <Footer />
     <BottomBar model={model} />
+    <WaFab model={model} />
     <Cotizador />
 
     <script define:vars={{ gaId, clarityId }}>
