@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import Icon from '../../components/Icon.astro';
+import PrivadoNota from '../../components/PrivadoNota.astro';
 import WaButton from '../../components/WaButton.astro';
 import Hotspots from '../../components/Hotspots.astro';
 import Comparador from '../../components/Comparador.astro';
@@ -128,6 +129,7 @@ const anchors = [
             <li class="chip"><Icon name="bolt" class="h-4 w-4 text-vx-orange" />127 V</li>
             {m.areaPrivada > 0 && <li class="chip"><Icon name="lock" class="h-4 w-4 text-vx-orange" />Área privada</li>}
           </ul>
+          {m.areaPrivada > 0 && <PrivadoNota class="mt-4" />}
           <div class="mt-6 grid gap-3 sm:flex sm:flex-wrap">
             <WaButton block="modelo-hero" model={m.code} people={String(m.personas)} label={`Cotizar la ${m.code}`} size="lg" class="sm:flex-1 [&>a]:w-full" />
             <a href={telLink} class="btn btn-ghost btn-lg" data-call data-block="modelo-hero"><Icon name="phone" class="btn-icon" /> Llamar</a>

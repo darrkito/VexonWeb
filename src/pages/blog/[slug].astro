@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PrivadoNota from '../../components/PrivadoNota.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import WaButton from '../../components/WaButton.astro';
 import FaqList from '../../components/FaqList.astro';
@@ -51,6 +52,7 @@ const schema = [
           </nav>
         )}
         <Content />
+        <PrivadoNota class="mt-6" />
       </div>
       <aside class="lg:sticky lg:top-28 lg:self-start">
         <p class="mb-3 font-display text-lg text-vx-black">Modelo recomendado</p>

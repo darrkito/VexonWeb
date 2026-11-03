@@ -5,6 +5,7 @@
  * Funciona sin framework; los datos de modelos se pasan como JSON mínimo.
  */
 import Icon from './Icon.astro';
+import PrivadoNota from './PrivadoNota.astro';
 import { MODELOS } from '../data/modelos';
 import { SITE } from '../lib/site';
 const data = MODELOS.map((m) => ({ code: m.code, slug: m.slug, personas: m.personas, d: m.distribucion, largo: m.largo }));
@@ -26,6 +27,7 @@ const data = MODELOS.map((m) => ({ code: m.code, slug: m.slug, personas: m.perso
     </fieldset>
     <fieldset>
       <legend class="label">2. ¿Alguien necesita oficina privada?</legend>
+      <PrivadoNota tone="light" class="mb-3" open={false} />
       <div class="grid grid-cols-2 gap-2">
         <label><input class="sr-only" type="radio" name="privado" value="no" checked /><span class="opt">No, abierta</span></label>
         <label><input class="sr-only" type="radio" name="privado" value="si" /><span class="opt">Sí, con privado</span></label>

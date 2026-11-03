@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import Icon from '../../components/Icon.astro';
+import PrivadoNota from '../../components/PrivadoNota.astro';
 import WaButton from '../../components/WaButton.astro';
 import ModelCard from '../../components/ModelCard.astro';
 import Steps from '../../components/Steps.astro';
@@ -70,6 +71,7 @@ const schema = [
           </div>
         ))}
       </div>
+      <PrivadoNota class="mt-6" />
       <a href="/oficinas-moviles" class="mt-8 inline-block font-display text-vx-black underline decoration-vx-orange decoration-2 underline-offset-4">Ver los 8 modelos</a>
     </div>
   </section>

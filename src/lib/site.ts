@@ -50,3 +50,8 @@ export const NAV = [
 ] as const;
 
 export const absoluteUrl = (path = '/') => new URL(path, SITE.url).toString().replace(/\/$/, path === '/' ? '/' : '');
+
+export const PRIVADO_NOTA = {
+  titulo: '¿Qué es una oficina privada?',
+  texto: 'Es un área separada dentro de la misma unidad: mide 2.50 m de largo y tiene su propio minisplit. Sirve para que el jefe de obra reciba a clientes o subcontratistas mientras el equipo sigue trabajando en el área abierta. Los modelos P (VX-6P, VX-8P y VX-10P) la incluyen; los modelos M son un solo espacio abierto.',
+} as const;

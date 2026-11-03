@@ -3,6 +3,7 @@ import { Picture } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
+import PrivadoNota from '../components/PrivadoNota.astro';
 import ServiceMap from '../components/ServiceMap.astro';
 import WaButton from '../components/WaButton.astro';
 import ModelCard from '../components/ModelCard.astro';
@@ -166,6 +167,7 @@ const comparativa = [
           <p class="eyebrow mb-3">LÍNEA VX · 8 MODELOS</p>
           <h2 id="linea-title" class="text-4xl sm:text-5xl">Línea VX: 8 oficinas, una para cada obra</h2>
           <p class="lead mt-3">Modelos M con oficina abierta y modelos P con área privada. Toca cualquiera para ver su ficha completa.</p>
+          <PrivadoNota class="mt-4" />
         </div>
         <div class="flex gap-2" role="group" aria-label="Filtrar modelos" data-filter>
           <button type="button" class="opt !min-h-11 !text-base" aria-pressed="true" data-f="all">Todos</button>

@@ -6,6 +6,7 @@ import Comparador from '../../components/Comparador.astro';
 import FaqList from '../../components/FaqList.astro';
 import WaButton from '../../components/WaButton.astro';
 import Icon from '../../components/Icon.astro';
+import PrivadoNota from '../../components/PrivadoNota.astro';
 import { MODELOS, fmtKg } from '../../data/modelos';
 import { FAQ_CATALOGO } from '../../data/faqs';
 import { SITE } from '../../lib/site';
@@ -51,6 +52,7 @@ const schema = [
         <button type="button" class="opt !min-h-10 !bg-white !text-base" aria-pressed="false" data-f="M">Abiertas (M)</button>
         <button type="button" class="opt !min-h-10 !bg-white !text-base" aria-pressed="false" data-f="P">Con privado (P)</button>
       </div>
+      <PrivadoNota class="mt-4" />
       <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-cat-grid>
         {ordered.map((m) => <ModelCard m={m} block="catalogo" headingLevel="h2" />)}
       </div>

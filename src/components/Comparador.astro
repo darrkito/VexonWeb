@@ -1,6 +1,7 @@
 ---
 /** Comparador de 2 modelos. La tabla inicial sale en el HTML; el script solo intercambia columnas. */
 import Icon from './Icon.astro';
+import PrivadoNota from './PrivadoNota.astro';
 import { MODELOS, fmtKg, type Modelo } from '../data/modelos';
 import { buildWhatsAppLink } from '../lib/whatsapp';
 interface Props { a?: string; b?: string; block?: string }
@@ -55,6 +56,7 @@ const B = MODELOS.find((m) => m.slug === b)!;
       })}
     </tbody>
   </table>
+  <PrivadoNota class="my-4" />
   <div class="grid gap-3 border-t border-vx-line bg-white p-4 sm:grid-cols-2">
     {[A, B].map((m, i) => (
       <a href={buildWhatsAppLink({ model: m.code, people: String(m.personas) })} target="_blank" rel="noopener" class:list={['btn w-full', i === 1 ? 'btn-wa' : 'btn-ghost']} data-wa data-block={block} data-model={m.code} data-cta={i}>
