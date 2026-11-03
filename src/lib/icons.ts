@@ -5,6 +5,7 @@ export const ICONS = {
   download: '<path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M5 19h14"/>',
   share: '<circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="m8.2 10.8 7.6-4.1M8.2 13.2l7.6 4.1"/>',
   arrow: '<path d="M5 12h14m-5-5 5 5-5 5"/>',
+  'arrow-up-right': '<path d="M5 19 19 5M7 5h12v12"/>',
   check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
   x: '<path d="M6 6l12 12M18 6 6 18"/>',
   users: '<circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5.2 6-5.2s5.4 1.9 6 5.2"/><path d="M15.5 4.9a3.2 3.2 0 0 1 0 6.2M17.5 14.6c1.8.6 3.1 2.2 3.5 4.9"/>',
