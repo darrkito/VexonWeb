@@ -1,4 +1,6 @@
 ---
+import { Picture } from 'astro:assets';
+import foto from '../../assets/fotos/oficina-movil-obra-portada.jpg';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import Icon from '../../components/Icon.astro';
@@ -28,15 +30,21 @@ const schema = [
 ];
 ---
 <BaseLayout title={s.title} description={s.description} schema={schema} ogImage={`/og/soluciones-${s.slug}.jpg`}>
-  <section class="relative overflow-hidden bg-vx-sand pb-14 pt-4 sm:pt-6">
+  <section class="relative isolate overflow-hidden bg-vx-sand pb-14 pt-4 sm:pt-6">
+    <div class="pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-2/5 lg:block" aria-hidden="true"><Picture src={foto} formats={['avif']} fallbackFormat="webp" widths={[720, 1100]} sizes="40vw" alt="" class="photo-fade opacity-[.12]" loading="lazy" decoding="async" /></div>
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="hatch absolute -right-20 top-0 h-full w-1/3 opacity-40" aria-hidden="true"></div>
     <div class="wrap relative">
       <Breadcrumbs items={[{ name: 'Inicio', href: '/' }, { name: 'Soluciones' }, { name: nombres[s.slug] }]} />
       <nav class="mt-5 flex flex-wrap gap-2" aria-label="Soluciones">
         {SOLUCIONES.map((x) => <a href={`/soluciones/${x.slug}`} class:list={['rounded-full px-4 py-2 font-display', x.slug === s.slug ? 'bg-vx-black text-white' : 'bg-white text-vx-black hover:bg-vx-line/40']} aria-current={x.slug === s.slug ? 'page' : undefined}>{nombres[x.slug]}</a>)}
       </nav>
-      <h1 class="mt-6 max-w-4xl text-[2.3rem] leading-[1.05] sm:text-6xl">{s.h1}</h1>
-      <p class="lead mt-5 !max-w-3xl">{s.respuesta}</p>
+      <div class="mt-6">
+        <p class="eyebrow mb-3">SOLUCIONES</p>
+        <h1 class="max-w-4xl text-[2.3rem] lg:max-w-[58%] leading-[1.05] sm:text-6xl">{s.h1}</h1>
+      </div>
+      <p class="lead mt-5 !max-w-3xl lg:!max-w-[58%]">{s.respuesta}</p>
       <div class="mt-7 flex flex-wrap items-center gap-3">
         <WaButton block={`sol-${s.slug}-hero`} persona={s.persona} size="lg" />
         <a href={telLink} class="btn btn-ghost btn-lg" data-call data-block={`sol-${s.slug}-hero`}><Icon name="phone" class="btn-icon" /> Llamar</a>
@@ -45,7 +53,9 @@ const schema = [
     </div>
   </section>
 
-  <section class="section bg-white" aria-labelledby="dolor-title">
+  <section class="relative isolate overflow-hidden section bg-vx-paper" aria-labelledby="dolor-title">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap">
       <h2 id="dolor-title" class="text-4xl sm:text-5xl">Lo que resuelves con una oficina móvil</h2>
       <ul class="mt-10 grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -60,7 +70,9 @@ const schema = [
     </div>
   </section>
 
-  <section class="section bg-vx-sand" aria-labelledby="mod-title">
+  <section class="relative isolate overflow-hidden section bg-vx-sand" aria-labelledby="mod-title">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap">
       <h2 id="mod-title" class="text-4xl sm:text-5xl">Modelos recomendados</h2>
       <div class="mt-10 grid gap-5 md:grid-cols-3">
@@ -76,7 +88,9 @@ const schema = [
     </div>
   </section>
 
-  <section class="section bg-white" aria-labelledby="check-title">
+  <section class="relative isolate overflow-hidden section bg-vx-paper" aria-labelledby="check-title">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap grid gap-10 lg:grid-cols-2">
       <div>
         <h2 id="check-title" class="text-4xl sm:text-5xl">Qué necesitas para instalarla</h2>
@@ -91,7 +105,9 @@ const schema = [
     </div>
   </section>
 
-  <section class="section bg-vx-sand" aria-labelledby="pasos-title">
+  <section class="relative isolate overflow-hidden section bg-vx-sand" aria-labelledby="pasos-title">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap">
       <h2 id="pasos-title" class="text-4xl sm:text-5xl">Cómo funciona la renta</h2>
       <div class="mt-10"><Steps /></div>

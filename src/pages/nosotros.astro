@@ -24,22 +24,27 @@ const schema = [breadcrumbs([{ name: 'Inicio', url: SITE.url }, { name: 'Nosotro
   pageType="AboutPage"
   ogImage="/og/nosotros.jpg"
 >
-  <section class="bg-white pb-14 pt-4 sm:pt-6">
+  <section class="relative isolate overflow-hidden bg-vx-paper pb-14 pt-4 sm:pt-6">
+    <div class="pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-1/2 lg:block" aria-hidden="true"><Picture src={foto} formats={['avif']} fallbackFormat="webp" widths={[720, 1100]} sizes="50vw" alt="" class="photo-fade opacity-[.12]" loading="lazy" decoding="async" /></div>
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap">
       <Breadcrumbs items={[{ name: 'Inicio', href: '/' }, { name: 'Nosotros' }]} />
       <div class="mt-6 grid gap-10 lg:grid-cols-2 lg:items-center">
         <div>
+          <p class="eyebrow mb-3">VEXON BY CAPELTON</p>
           <h1 class="text-[2.4rem] leading-[1.04] sm:text-6xl">Espacios que se mueven contigo</h1>
           <p class="lead mt-5">Vexon es la línea de oficinas móviles en renta respaldada por Capelton, fabricante mexicano de espacios modulares y móviles. Reunimos una familia de oficinas funcionales, resistentes y listas para operar, en configuraciones de 3 a 10 metros que se adaptan a la escala y dinámica de cada proyecto.</p>
           <p class="mt-4 text-vx-slate">Trabajamos solo con renta para que constructoras, negocios en remodelación y plantas industriales tengan una oficina completa durante el tiempo exacto que la necesitan, sin construir ni invertir en un activo que después no usarán.</p>
           <WaButton block="nosotros-hero" size="lg" class="mt-8" micro />
         </div>
-        <Picture src={foto} formats={['avif']} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 1024px) 560px, 92vw" alt="Oficina móvil Vexon instalada en obra con maquinaria al fondo" class="h-[30rem] w-full rounded-2xl object-cover object-[50%_60%]" loading="eager" />
       </div>
     </div>
   </section>
 
-  <section class="section bg-vx-sand" aria-labelledby="pilares-title">
+  <section class="relative isolate overflow-hidden section bg-vx-sand" aria-labelledby="pilares-title">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap">
       <h2 id="pilares-title" class="text-4xl sm:text-5xl">Tres principios en cada oficina</h2>
       <ul class="mt-10 grid gap-5 md:grid-cols-3">
@@ -54,7 +59,9 @@ const schema = [breadcrumbs([{ name: 'Inicio', url: SITE.url }, { name: 'Nosotro
     </div>
   </section>
 
-  <section class="section bg-white" aria-labelledby="capelton-title">
+  <section class="relative isolate overflow-hidden section bg-vx-paper" aria-labelledby="capelton-title">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap grid gap-10 lg:grid-cols-2">
       <div>
         <h2 id="capelton-title" class="text-4xl sm:text-5xl">El respaldo de Capelton</h2>
@@ -70,7 +77,9 @@ const schema = [breadcrumbs([{ name: 'Inicio', url: SITE.url }, { name: 'Nosotro
     </div>
   </section>
 
-  <section class="section bg-vx-sand" aria-labelledby="donde-title">
+  <section class="relative isolate overflow-hidden section bg-vx-sand" aria-labelledby="donde-title">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap grid gap-8 lg:grid-cols-2 lg:items-center">
       <div>
         <h2 id="donde-title" class="text-4xl sm:text-5xl">Dónde estamos</h2>

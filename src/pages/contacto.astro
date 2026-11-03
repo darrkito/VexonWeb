@@ -19,10 +19,15 @@ const mapEmbed = `https://www.google.com/maps?q=${SITE.geo.lat},${SITE.geo.lng}&
   pageType="ContactPage"
   ogImage="/og/contacto.jpg"
 >
-  <section class="bg-vx-sand pb-14 pt-4 sm:pt-6">
+  <section class="relative isolate overflow-hidden bg-vx-sand pb-14 pt-4 sm:pt-6">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap">
       <Breadcrumbs items={[{ name: 'Inicio', href: '/' }, { name: 'Contacto' }]} />
-      <h1 class="mt-6 text-[2.4rem] leading-[1.04] sm:text-6xl">Cotiza tu oficina móvil</h1>
+      <div class="mt-6">
+        <p class="eyebrow mb-3">CONTACTO</p>
+        <h1 class="text-[2.4rem] leading-[1.04] sm:text-6xl">Cotiza tu oficina móvil</h1>
+      </div>
       <p class="lead mt-4">La forma más rápida es WhatsApp: mándanos cuántas personas trabajarán, la ubicación de la obra y la fecha de inicio.</p>
       <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <a href={`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('Hola Vexon. Quiero cotizar la renta de una oficina móvil. Mi obra está en: ___. Empezaría el: ___. Tiempo de renta aproximado: ___.')}`} target="_blank" rel="noopener" class="group flex items-center gap-4 rounded-2xl bg-vx-orange p-5 text-vx-black" data-wa data-block="contacto-tarjeta">
@@ -41,7 +46,9 @@ const mapEmbed = `https://www.google.com/maps?q=${SITE.geo.lat},${SITE.geo.lng}&
     </div>
   </section>
 
-  <section class="section bg-white" aria-labelledby="form-title">
+  <section class="relative isolate overflow-hidden section bg-vx-paper" aria-labelledby="form-title">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap grid gap-12 lg:grid-cols-[1.15fr_0.85fr]">
       <div>
         <h2 id="form-title" class="text-4xl">¿Prefieres que te contactemos?</h2>

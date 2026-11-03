@@ -21,14 +21,21 @@ const schema = [
   pageType="CollectionPage"
   ogImage="/og/blog.jpg"
 >
-  <section class="bg-vx-sand pb-12 pt-4 sm:pt-6">
+  <section class="relative isolate overflow-hidden bg-vx-sand pb-12 pt-4 sm:pt-6">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap">
       <Breadcrumbs items={[{ name: 'Inicio', href: '/' }, { name: 'Blog' }]} />
-      <h1 class="mt-6 text-[2.4rem] leading-[1.04] sm:text-6xl">Guías para tu obra</h1>
+      <div class="mt-6">
+        <p class="eyebrow mb-3">GUÍAS PARA TU OBRA</p>
+        <h1 class="text-[2.4rem] leading-[1.04] sm:text-6xl">Guías para tu obra</h1>
+      </div>
       <p class="lead mt-4">Cómo elegir, instalar y aprovechar una oficina móvil en Guadalajara, explicado por el equipo de Vexon.</p>
     </div>
   </section>
-  <section class="section bg-white !pt-12">
+  <section class="relative isolate overflow-hidden section bg-vx-paper !pt-12">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap">
       {destacado && (
         <article class="grid gap-6 rounded-2xl bg-vx-black p-7 text-white sm:p-10 lg:grid-cols-[1.4fr_1fr] lg:items-end">

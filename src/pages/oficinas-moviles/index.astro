@@ -28,11 +28,14 @@ const schema = [
   pageType="CollectionPage"
   ogImage="/og/oficinas-moviles.jpg"
 >
-  <section class="bg-vx-sand pb-10 pt-4 sm:pt-6">
+  <section class="relative isolate overflow-hidden bg-vx-sand pb-10 pt-4 sm:pt-6">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap">
       <Breadcrumbs items={[{ name: 'Inicio', href: '/' }, { name: 'Oficinas móviles' }]} />
       <div class="mt-5 grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
         <div>
+          <p class="eyebrow mb-3">CATÁLOGO VX</p>
           <h1 class="text-[2.4rem] leading-[1.04] sm:text-6xl">Oficinas móviles en renta: 8 modelos de 3 a 10 metros</h1>
           <p class="lead mt-4">Todas miden 2.5 m de ancho y traen minisplit, mesas de trabajo, iluminación LED y contactos de 127 V. Los modelos M son oficina abierta; los modelos P suman un área privada con su propio clima.</p>
         </div>
@@ -59,7 +62,9 @@ const schema = [
     </div>
   </section>
 
-  <section class="section bg-white" aria-labelledby="tabla-title">
+  <section class="relative isolate overflow-hidden section bg-vx-paper" aria-labelledby="tabla-title">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap">
       <h2 id="tabla-title" class="text-4xl sm:text-5xl">Toda la línea VX en una tabla</h2>
       <p class="lead mt-3">Datos de las fichas técnicas oficiales.</p>
@@ -94,7 +99,9 @@ const schema = [
     </div>
   </section>
 
-  <section class="section bg-vx-sand" aria-labelledby="cmp-title">
+  <section class="relative isolate overflow-hidden section bg-vx-sand" aria-labelledby="cmp-title">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 right-0 top-0 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
       <div>
         <h2 id="cmp-title" class="text-4xl sm:text-5xl">Compara dos modelos lado a lado</h2>
