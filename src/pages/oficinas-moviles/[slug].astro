@@ -12,6 +12,7 @@ import Steps from '../../components/Steps.astro';
 import FaqList from '../../components/FaqList.astro';
 import { MODELOS, ACABADOS, fmtKg, type Modelo } from '../../data/modelos';
 import { faqsModelo } from '../../data/faqs';
+import { getRenders } from '../../data/renders';
 import { SITE } from '../../lib/site';
 import { telLink } from '../../lib/whatsapp';
 import { breadcrumbs, faqPage, productModelo } from '../../lib/schema';
@@ -23,6 +24,8 @@ export function getStaticPaths() {
 }
 
 const { m } = Astro.props as { m: Modelo };
+const renders = getRenders(m.slug);
+if (!renders) throw new Error(`Faltan renders para ${m.slug}`);
 const url = `${SITE.url}/oficinas-moviles/${m.slug}`;
 const ordered = [...MODELOS].sort((a, b) => a.largo - b.largo || a.distribucion.localeCompare(b.distribucion));
 const sameDist = ordered.filter((x) => x.distribucion === m.distribucion);
@@ -92,13 +95,23 @@ const anchors = [
       <div class="mt-4 grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:items-start">
         <div>
           <div class="gallery relative overflow-hidden rounded-2xl bg-white">
-            <div class="snap-row !gap-0 !pb-0" data-gallery tabindex="0" role="region" aria-label={`Galería de la ${m.code}: render, plano y foto en obra`}>
+            <div class="snap-row !gap-0 !pb-0" data-gallery tabindex="0" role="region" aria-label={`Galería de la ${m.code}: render, vistas, planta 3D, plano y foto en obra`}>
               <figure class="relative w-full flex-none px-4 pb-3 pt-5 sm:pt-8">
                 <span class="hatch pointer-events-none absolute inset-y-0 right-0 w-1/2 opacity-50" aria-hidden="true"></span>
                 <div class="pointer-events-none absolute inset-x-[10%] bottom-[4%] h-6" style="background: radial-gradient(closest-side, rgb(15 15 16 / .22), transparent)" aria-hidden="true"></div>
                 <Picture src={m.image} formats={['avif']} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 1024px) 720px, 100vw" alt={`Oficina móvil ${m.code} de ${m.largo} metros con escalera y torres de nivelación`} class="relative mx-auto h-48 w-auto object-contain sm:h-80" loading="eager" fetchpriority="high" style={`view-transition-name: ${m.slug}`} />
                 <figcaption class="sr-only">Render de la {m.code}</figcaption>
               </figure>
+              {[
+                renders.isometrica && { src: renders.isometrica, alt: `Vista isométrica de la ${m.code} con minisplit`, caption: 'Vista isométrica' },
+                renders.elevacion && { src: renders.elevacion, alt: `Vista lateral de la ${m.code}`, caption: 'Elevación' },
+                { src: renders.planta, alt: `Planta en 3D de la ${m.code} vista desde arriba con las mesas de trabajo`, caption: 'Planta 3D' },
+              ].filter((vista) => vista !== undefined).map((vista) => (
+                <figure class="w-full flex-none bg-white px-4 py-4">
+                  <Picture src={vista.src} formats={['avif']} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 1024px) 720px, 100vw" width={vista.src.width} height={vista.src.height} alt={vista.alt} class="mx-auto h-48 w-full object-contain sm:h-80" loading="lazy" />
+                  <figcaption class="sr-only">{vista.caption}</figcaption>
+                </figure>
+              ))}
               <figure class="w-full flex-none bg-white px-4 py-4">
                 <img src={m.plan} alt={`Plano en planta de la ${m.code} con medidas en metros`} class="mx-auto h-48 w-auto sm:h-80" width={m.planSize[0]} height={m.planSize[1]} loading="lazy" decoding="async" />
                 <figcaption class="sr-only">Plano en planta</figcaption>
@@ -108,8 +121,8 @@ const anchors = [
                 <figcaption class="sr-only">Oficinas Vexon en obra</figcaption>
               </figure>
             </div>
-            <div class="flex justify-center gap-1.5 border-t border-vx-sand bg-white px-2 py-2" data-gallery-dots>
-              {['Render', 'Plano', 'En obra'].map((l, i) => <button type="button" class:list={['rounded-full px-3 py-1 text-sm font-display', i === 0 ? 'bg-vx-black text-white' : 'text-vx-black']} data-i={i} aria-label={`Ver ${l}`}>{l}</button>)}
+            <div class="flex justify-start gap-1.5 overflow-x-auto border-t border-vx-sand bg-white px-2 py-2 sm:justify-center" data-gallery-dots>
+              {['Render', ...(renders.isometrica ? ['Isométrica'] : []), ...(renders.elevacion ? ['Elevación'] : []), 'Planta 3D', 'Plano', 'En obra'].map((l, i) => <button type="button" class:list={['flex-none rounded-full px-3 py-1 text-sm font-display', i === 0 ? 'bg-vx-black text-white' : 'text-vx-black']} data-i={i} aria-label={`Ver ${l}`}>{l}</button>)}
             </div>
           </div>
         </div>
@@ -185,9 +198,14 @@ const anchors = [
   <!-- PLANO -->
   <section id="plano" class="section bg-vx-sand" aria-labelledby="plano-title">
     <div class="wrap grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-      <div class="glass relative isolate order-2 overflow-hidden p-6 lg:order-1">
-        <div class="bg-grid -z-10" aria-hidden="true"></div>
-        <img src={m.plan} alt={`Plano en planta de la oficina móvil ${m.code}, ${m.largo} × ${m.ancho} m`} class="mx-auto h-[28rem] w-auto sm:h-[34rem]" width={m.planSize[0]} height={m.planSize[1]} loading="lazy" decoding="async" />
+      <div class="order-2 lg:order-1">
+        <div class="glass relative isolate overflow-hidden p-6">
+          <div class="bg-grid -z-10" aria-hidden="true"></div>
+          <Picture src={renders.planta} formats={['avif']} fallbackFormat="webp" widths={[640, 960, 1280]} sizes="(min-width: 1024px) 50vw, 100vw" width={renders.planta.width} height={renders.planta.height} alt={`Planta en 3D de la ${m.code} vista desde arriba con las mesas de trabajo`} class="aspect-[16/9] w-full bg-white object-contain" loading="lazy" />
+          <p class="mt-4 text-center font-mono uppercase text-[.7rem] tracking-[.14em] text-vx-slate">PLANO ACOTADO</p>
+          <img src={m.plan} alt={`Plano en planta de la oficina móvil ${m.code}, ${m.largo} × ${m.ancho} m`} class="mx-auto h-40 w-auto" width={m.planSize[0]} height={m.planSize[1]} loading="lazy" decoding="async" />
+        </div>
+        <p class="mt-3 text-sm text-vx-slate">Render ilustrativo: el mobiliario puede variar. Las medidas y el equipamiento son los de la ficha técnica.</p>
       </div>
       <div class="order-1 lg:order-2">
         <h2 id="plano-title" class="text-4xl sm:text-5xl">Plano y distribución</h2>
