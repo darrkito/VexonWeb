@@ -23,7 +23,12 @@ const table = Object.fromEntries(MODELOS.map((m) => [m.slug, { code: m.code, wa:
 const A = MODELOS.find((m) => m.slug === a)!;
 const B = MODELOS.find((m) => m.slug === b)!;
 ---
-<div class="comparador card overflow-hidden" data-comparador>
+<div class="comparador overflow-hidden rounded-[2rem] bg-vx-sand/70 p-3 shadow-float sm:p-6" data-comparador>
+  <div class="pointer-events-none mb-4 flex items-center gap-4 rounded-2xl bg-vx-black p-4 text-white shadow-float" style="background: linear-gradient(180deg,#252529,#121214)" aria-hidden="true">
+    <span class="relative grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-vx-orange/15 ring-1 ring-white/10"><Icon name="compare" class="h-6 w-6 text-vx-orange" /><span class="halo absolute right-1 top-1 h-2 w-2 rounded-full bg-vx-orange"></span></span>
+    <span><span class="block font-mono text-[.7rem] text-white/70">COMPARADOR</span><span class="block font-display text-xl">Modelos Vexon</span></span>
+    <span class="ml-auto rounded-full bg-white/10 px-3 py-1 font-mono text-xs text-white">{MODELOS.length} MODELOS</span>
+  </div>
   <div class="grid grid-cols-[1fr_1fr] gap-px bg-vx-line sm:grid-cols-[1.2fr_1fr_1fr]">
     <div class="hidden bg-vx-sand p-4 sm:block"><p class="font-display text-lg text-vx-black">Compara dos modelos</p><p class="text-sm text-vx-slate">Las diferencias se marcan en naranja.</p></div>
     {[A, B].map((m, i) => (
@@ -41,10 +46,10 @@ const B = MODELOS.find((m) => m.slug === b)!;
       {rows.map((r) => {
         const va = r.fmt(A), vb = r.fmt(B);
         return (
-          <tr class:list={['cmp-row border-t border-vx-line', va !== vb && 'is-diff']} data-k={r.k}>
-            <th scope="row" class="block px-3 pt-3 text-sm font-normal text-vx-slate sm:table-cell sm:w-[40%] sm:px-4 sm:py-3 sm:text-[0.95rem]">{r.label}</th>
-            <td class="inline-block w-1/2 px-3 pb-3 font-display text-lg text-vx-black sm:table-cell sm:w-auto sm:px-4 sm:py-3" data-c="0">{va}</td>
-            <td class="inline-block w-1/2 px-3 pb-3 font-display text-lg text-vx-black sm:table-cell sm:w-auto sm:px-4 sm:py-3" data-c="1">{vb}</td>
+          <tr class:list={['cmp-row border-t border-vx-line odd:bg-vx-paper even:bg-white', va !== vb && 'is-diff']} data-k={r.k}>
+            <th scope="row" class="block px-3 pt-3 text-center font-mono text-[.7rem] font-normal uppercase tracking-[.14em] text-vx-slate sm:table-cell sm:w-[40%] sm:px-4 sm:py-3">{r.label}</th>
+            <td class="inline-block w-1/2 px-3 pb-3 font-display text-xl text-vx-black sm:table-cell sm:w-auto sm:px-4 sm:py-3" data-c="0">{va}</td>
+            <td class="inline-block w-1/2 px-3 pb-3 font-display text-xl text-vx-black sm:table-cell sm:w-auto sm:px-4 sm:py-3" data-c="1">{vb}</td>
           </tr>
         );
       })}

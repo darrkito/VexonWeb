@@ -1,14 +1,16 @@
 ---
 import { Picture } from 'astro:assets';
 import WaButton from './WaButton.astro';
+import Icon from './Icon.astro';
 import type { Modelo } from '../data/modelos';
 interface Props { m: Modelo; block: string; headingLevel?: 'h2' | 'h3'; class?: string }
 const { m, block, headingLevel = 'h3', class: cls = '' } = Astro.props;
 const H = headingLevel;
 ---
-<article class:list={['model-card card group relative flex flex-col overflow-hidden', cls]} data-dist={m.distribucion}>
-  <a href={`/oficinas-moviles/${m.slug}`} class="relative block bg-vx-sand px-4 pt-6" aria-label={`Ver todo el detalle de la ${m.code}`}>
+<article class:list={['model-card card group relative flex flex-col overflow-hidden shadow-lift transition-transform duration-200 motion-safe:hover:-translate-y-1', cls]} data-dist={m.distribucion}>
+  <a href={`/oficinas-moviles/${m.slug}`} class="relative block px-4 pt-6" style="background: linear-gradient(180deg, #fff, #f4f3f1)" aria-label={`Ver todo el detalle de la ${m.code}`}>
     <span class="hatch pointer-events-none absolute inset-y-0 right-0 w-2/5 opacity-60" aria-hidden="true"></span>
+    <span class="pointer-events-none absolute inset-x-[10%] bottom-2 h-[1.2rem]" style="background: radial-gradient(closest-side, rgb(15 15 16 / .22), transparent)" aria-hidden="true"></span>
     <Picture
       src={m.image}
       formats={['avif']} fallbackFormat="webp"
@@ -22,16 +24,27 @@ const H = headingLevel;
     />
   </a>
   <div class="flex flex-1 flex-col p-5">
-    <div class="flex items-start justify-between gap-3">
-      <H class="model-code text-[2rem] leading-none"><a href={`/oficinas-moviles/${m.slug}`}>{m.code}</a></H>
-      <span class:list={['rounded-full px-2.5 py-1 text-xs font-display font-medium', m.distribucion === 'P' ? 'bg-vx-black text-white' : 'bg-vx-sand text-vx-black']}>{m.tipo}</span>
+    <div class="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+      <H class="model-code whitespace-nowrap text-[2rem] leading-none"><a href={`/oficinas-moviles/${m.slug}`}>{m.code}</a></H>
+      <span class:list={['shrink-0 whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[.62rem] font-medium uppercase tracking-[.08em]', m.distribucion === 'P' ? 'bg-vx-black text-white' : 'bg-vx-sand text-vx-black']}>{m.tipo}</span>
     </div>
     <p class="mt-3 text-[0.98rem] text-vx-slate">{m.resumen}</p>
-    <ul class="mt-4 grid grid-cols-3 gap-2 text-center">
-      <li class="rounded-lg bg-vx-sand px-2 py-2"><span class="block font-display text-lg text-vx-black">{m.largo} m</span><span class="text-xs text-vx-slate">largo</span></li>
-      <li class="rounded-lg bg-vx-sand px-2 py-2"><span class="block font-display text-lg text-vx-black">{m.personas}</span><span class="text-xs text-vx-slate">personas</span></li>
-      <li class="rounded-lg bg-vx-sand px-2 py-2"><span class="block font-display text-lg text-vx-black">{m.mesas}</span><span class="text-xs text-vx-slate">mesas</span></li>
+    <ul class="tray mt-4 grid-cols-3 text-center">
+      <li class="tile"><span class="tile-value block">{m.largo} m</span><span class="tile-label">largo</span></li>
+      <li class="tile"><span class="tile-value block">{m.personas}</span><span class="tile-label">personas</span></li>
+      <li class="tile"><span class="tile-value block">{m.mesas}</span><span class="tile-label">mesas</span></li>
     </ul>
+    <details class="group mt-3">
+      <summary class="flex min-h-11 cursor-pointer list-none items-center gap-2 font-display text-vx-black [&::-webkit-details-marker]:hidden">
+        <Icon name="menu" class="h-5 w-5 text-vx-orange-text" /> Ver equipamiento
+        <Icon name="chevron" class="ml-auto h-5 w-5 motion-safe:transition-transform group-open:rotate-180" />
+      </summary>
+      <ul class="grid gap-2 pb-2 text-sm text-vx-slate">
+        {[`${m.ventanas} ventanas`, `${m.lamparasLed} lámparas LED`, `${m.minisplits} minisplit${m.minisplits === 1 ? '' : 's'}`, m.contactos127v && 'Contactos de 127 V', `${m.torresNivelacion} torres de nivelación`, `${m.ejes} eje${m.ejes === 1 ? '' : 's'}`, m.areaPrivada > 0 && 'Área privada', m.cocineta && 'Cocineta'].filter(Boolean).map((item) => (
+          <li class="flex items-start gap-2"><Icon name="check" class="h-4 w-4 shrink-0 text-vx-orange-text" />{item}</li>
+        ))}
+      </ul>
+    </details>
     <div class="mt-auto flex flex-wrap items-center gap-x-4 gap-y-3 pt-5">
       <WaButton block={block} model={m.code} people={String(m.personas)} label={`Cotizar ${m.code}`} class="flex-1" />
       <a href={`/oficinas-moviles/${m.slug}`} class="inline-flex min-h-11 items-center gap-1.5 font-display text-vx-black underline decoration-vx-orange decoration-2 underline-offset-4">Ver todo el detalle</a>

@@ -11,16 +11,17 @@ const visibles = new Set(m.hotspots.map((h) => h.n));
 const items = EQUIPAMIENTO.filter((e) => showExtras || !e.adicional);
 ---
 <div class="hotspots grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:items-center" data-hotspots={id}>
-  <div class="relative">
-    <div class="hatch absolute inset-x-8 bottom-6 top-10 rounded-3xl opacity-40" aria-hidden="true"></div>
+  <div class="glass relative rounded-3xl p-4 sm:p-8" style="background: linear-gradient(180deg, #fff, #f4f3f1)">
+    <div class="hatch pointer-events-none absolute inset-x-8 bottom-6 top-10 rounded-3xl opacity-40" aria-hidden="true"></div>
     <div class="relative">
+      <div class="pointer-events-none absolute inset-x-[10%] bottom-2 h-[1.2rem]" style="background: radial-gradient(closest-side, rgb(15 15 16 / .22), transparent)" aria-hidden="true"></div>
       <Picture
         src={m.image}
         formats={['avif']} fallbackFormat="webp"
         widths={[480, 760, 1100]}
         sizes="(min-width: 1024px) 640px, 92vw"
         alt={`Oficina móvil ${m.code} con su equipamiento numerado`}
-        class="h-auto w-full"
+        class="relative h-auto w-full"
         loading="lazy"
       />
       {m.hotspots.map((h) => {
@@ -53,7 +54,8 @@ const items = EQUIPAMIENTO.filter((e) => showExtras || !e.adicional);
 <style>
   .hs-pin { width: 1.9rem; height: 1.9rem; font-size: 0.85rem; cursor: pointer; }
   .hs-pin:hover, .hs-pin.is-active { background: var(--color-vx-black); }
-  .hs-item.is-active { background: var(--color-vx-orange-soft); }
+  .hs-pin:not(.is-active)::after { display: none; }
+  .hs-item.is-active { box-shadow: inset 3px 0 var(--color-vx-orange); background: color-mix(in srgb, var(--color-vx-orange-soft) 60%, transparent); }
 </style>
 <script>
   document.querySelectorAll<HTMLElement>('[data-hotspots]').forEach((root) => {
