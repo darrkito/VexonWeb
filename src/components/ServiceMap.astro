@@ -42,11 +42,11 @@ const points = SITE.areaServed.map((name) => ({
     <animate attributeName="opacity" values=".5;0" dur="2.8s" repeatCount="indefinite" />
   </circle>
   <circle cx="300" cy="130" r="7" fill="#0f0f10" />
-  <g font-family="var(--font-mono)" font-size="13" letter-spacing=".08em" fill="#474d54">
-    {variant === 'panel' && <text x="314" y="135">BASE ZAPOPAN</text>}
+  <g font-family="var(--font-mono)" font-size={variant === 'panel' ? 24 : 13} letter-spacing=".08em" fill="#474d54">
+    {variant === 'panel' && <text x="318" y="138">BASE ZAPOPAN</text>}
     {points.filter((point) => variant === 'panel' || (point.x >= 420 && point.y < 480)).map((point) => (
-      <text x={point.x > 700 ? point.x - 14 : point.x + 14} y={point.y + 5} text-anchor={point.x > 700 ? 'end' : 'start'}>{point.name}</text>
+      <text x={point.x > 700 ? point.x - 18 : point.x + 18} y={point.y + 5} text-anchor={point.x > 700 ? 'end' : 'start'}>{point.name}</text>
     ))}
-    {variant === 'panel' && <text x="20" y="680" font-size="11">ESQUEMA NO A ESCALA</text>}
+    {variant === 'panel' && <text x="20" y="680" font-size="18">ESQUEMA NO A ESCALA</text>}
   </g>
 </svg>

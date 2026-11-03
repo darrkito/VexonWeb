@@ -19,6 +19,7 @@ import { SITE, fullAddress } from '../lib/site';
 import { telLink } from '../lib/whatsapp';
 import { faqPage, rentalService, itemList } from '../lib/schema';
 import fotoObra from '../assets/fotos/oficinas-moviles-obra-atardecer.jpg';
+import fotoPortada from '../assets/fotos/oficina-movil-obra-portada.jpg';
 
 const hero = getModelo('vx-10m')!;
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
@@ -102,36 +103,42 @@ const comparativa = [
   </section>
 
   <!-- 2. SELECTOR -->
-  <section class="bg-vx-sand py-14 sm:py-16" aria-labelledby="sel-title" id="encuentra">
+  <section class="relative isolate overflow-hidden bg-vx-sand py-14 sm:py-16" aria-labelledby="sel-title" id="encuentra">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 -right-32 -top-32 h-[36rem] w-[36rem]" aria-hidden="true"></div>
     <div class="wrap grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
       <div>
+        <p class="eyebrow mb-3">SELECTOR DE MODELO</p>
         <h2 id="sel-title" class="text-4xl sm:text-5xl">Encuentra tu oficina en dos toques</h2>
         <p class="lead mt-4">Dinos cuántas personas van a trabajar y si alguien necesita privado. Te mostramos el modelo exacto y lo cotizas en el mismo momento.</p>
         <p class="mt-6 hidden text-vx-slate lg:block">¿Prefieres que te recomendemos? <button type="button" class="font-display text-vx-black underline decoration-vx-orange decoration-2 underline-offset-4" data-open-cotizador data-block="selector-ayuda">Usa el cotizador de 3 pasos</button></p>
       </div>
-      <div class="rounded-2xl bg-white p-4 shadow-[var(--shadow-lift)] sm:p-6">
+      <div class="glass shadow-float p-4 sm:p-6">
         <Selector id="home" />
       </div>
     </div>
   </section>
 
   <!-- 3. CONFIANZA -->
-  <section class="border-b border-vx-line bg-white" aria-label="Por qué confiar en Vexon">
-    <ul class="wrap grid grid-cols-2 gap-x-6 gap-y-5 py-8 lg:grid-cols-4">
-      <li class="flex items-center gap-3"><Icon name="shield" class="h-8 w-8 flex-none text-vx-orange" /><span class="text-[0.98rem]"><b class="block font-display font-medium text-vx-black">Respaldo Capelton</b>Fabricante mexicano de espacios móviles</span></li>
-      <li class="flex items-center gap-3"><Icon name="ruler" class="h-8 w-8 flex-none text-vx-orange" /><span class="text-[0.98rem]"><b class="block font-display font-medium text-vx-black">De 3 a 10 metros</b>Para 3 a 9 personas</span></li>
-      <li class="flex items-center gap-3"><Icon name="level" class="h-8 w-8 flex-none text-vx-orange" /><span class="text-[0.98rem]"><b class="block font-display font-medium text-vx-black">Torres de nivelación</b>Firme en terreno de obra</span></li>
-      <li class="flex items-center gap-3"><Icon name="pin" class="h-8 w-8 flex-none text-vx-orange" /><span class="text-[0.98rem]"><b class="block font-display font-medium text-vx-black">Base en Zapopan</b>Cerca de tu obra en la ZMG</span></li>
+  <section class="relative isolate overflow-hidden bg-white shadow-[inset_0_-1px_var(--color-vx-line)]" aria-label="Por qué confiar en Vexon">
+    <ul class="wrap grid grid-cols-2 gap-y-5 py-8 lg:grid-cols-4 lg:divide-x lg:divide-vx-line">
+      <li class="flex items-center gap-3 lg:px-4"><span class="grid h-10 w-10 flex-none place-items-center rounded-full bg-vx-orange-soft" aria-hidden="true"><Icon name="shield" class="h-6 w-6 text-vx-orange" /></span><span class="text-[0.98rem]"><b class="block font-display font-medium text-vx-black">Respaldo Capelton</b>Fabricante mexicano de espacios móviles</span></li>
+      <li class="flex items-center gap-3 lg:px-4"><span class="grid h-10 w-10 flex-none place-items-center rounded-full bg-vx-orange-soft" aria-hidden="true"><Icon name="ruler" class="h-6 w-6 text-vx-orange" /></span><span class="text-[0.98rem]"><b class="block font-display font-medium text-vx-black">De 3 a 10 metros</b>Para 3 a 9 personas</span></li>
+      <li class="flex items-center gap-3 lg:px-4"><span class="grid h-10 w-10 flex-none place-items-center rounded-full bg-vx-orange-soft" aria-hidden="true"><Icon name="level" class="h-6 w-6 text-vx-orange" /></span><span class="text-[0.98rem]"><b class="block font-display font-medium text-vx-black">Torres de nivelación</b>Firme en terreno de obra</span></li>
+      <li class="flex items-center gap-3 lg:px-4"><span class="grid h-10 w-10 flex-none place-items-center rounded-full bg-vx-orange-soft" aria-hidden="true"><Icon name="pin" class="h-6 w-6 text-vx-orange" /></span><span class="text-[0.98rem]"><b class="block font-display font-medium text-vx-black">Base en Zapopan</b>Cerca de tu obra en la ZMG</span></li>
     </ul>
   </section>
 
   <!-- 4. DOLOR → SOLUCIÓN -->
-  <section class="section bg-white" aria-labelledby="dolor-title">
+  <section class="section relative isolate overflow-hidden bg-vx-paper" aria-labelledby="dolor-title">
     <div class="wrap grid gap-10 lg:grid-cols-2 lg:items-center">
       <div class="relative order-2 lg:order-1">
+        <div class="hatch pointer-events-none absolute -bottom-4 -left-4 -z-10 h-full w-full rounded-2xl opacity-60" aria-hidden="true"></div>
         <Picture src={fotoObra} formats={['avif']} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 1024px) 560px, 92vw" alt="Dos oficinas móviles Vexon instaladas en una obra al atardecer" class="h-[26rem] w-full rounded-2xl object-cover object-[50%_62%] sm:h-[32rem]" loading="lazy" />
+        <span class="glass pointer-events-none absolute bottom-4 left-4 px-4 py-2 font-mono text-vx-black" aria-hidden="true">VX-024</span>
       </div>
       <div class="order-1 lg:order-2">
+        <p class="eyebrow mb-3">OBRA SIN ESPERAS</p>
         <h2 id="dolor-title" class="text-4xl sm:text-5xl">Tu obra necesita oficina antes del primer colado</h2>
         <p class="lead mt-4">Con una oficina móvil tienes dónde trabajar desde el primer día, sin gastar tiempo ni material de la obra.</p>
         <ul class="mt-8 grid gap-6 sm:grid-cols-2">
@@ -149,10 +156,14 @@ const comparativa = [
   </section>
 
   <!-- 5. LÍNEA VX -->
-  <section id="modelos" class="section bg-vx-sand" aria-labelledby="linea-title">
+  <section id="modelos" class="section relative isolate overflow-hidden bg-vx-sand" aria-labelledby="linea-title">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 -left-32 -top-32 h-[36rem] w-[36rem]" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 -bottom-32 -right-32 h-[36rem] w-[36rem]" aria-hidden="true"></div>
     <div class="wrap">
       <div class="flex flex-wrap items-end justify-between gap-5">
         <div>
+          <p class="eyebrow mb-3">LÍNEA VX · 8 MODELOS</p>
           <h2 id="linea-title" class="text-4xl sm:text-5xl">Línea VX: 8 oficinas, una para cada obra</h2>
           <p class="lead mt-3">Modelos M con oficina abierta y modelos P con área privada. Toca cualquiera para ver su ficha completa.</p>
         </div>
@@ -169,8 +180,10 @@ const comparativa = [
   </section>
 
   <!-- 6. QUÉ INCLUYE -->
-  <section class="section bg-white" aria-labelledby="incluye-title">
+  <section class="section relative isolate overflow-hidden bg-vx-paper" aria-labelledby="incluye-title">
+    <div class="bg-glow pointer-events-none -z-10 left-1/2 top-1/2 h-[36rem] w-[36rem] -translate-x-1/2 -translate-y-1/2" aria-hidden="true"></div>
     <div class="wrap">
+      <p class="eyebrow mb-3">EQUIPAMIENTO DE SERIE</p>
       <h2 id="incluye-title" class="max-w-3xl text-4xl sm:text-5xl">Todo lo que trae cada oficina, punto por punto</h2>
       <p class="lead mt-4">La misma numeración de nuestras fichas técnicas. Toca un punto del render para ver qué es.</p>
       <div class="mt-10"><Hotspots m={hero} id="home-hs" /></div>
@@ -179,10 +192,12 @@ const comparativa = [
   </section>
 
   <!-- 7. COMPARADOR -->
-  <section class="section bg-vx-sand" aria-labelledby="cmp-title">
+  <section class="section relative isolate overflow-hidden bg-vx-sand" aria-labelledby="cmp-title">
+    <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
     <div class="wrap grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
       <div>
-        <h2 id="cmp-title" class="text-4xl sm:text-5xl">¿Dudas entre dos modelos? Compáralos</h2>
+        <p class="eyebrow mb-3">COMPARADOR TÉCNICO</p>
+      <h2 id="cmp-title" class="text-4xl sm:text-5xl">¿Dudas entre dos modelos? Compáralos</h2>
         <p class="lead mt-4">Elige cualquier par y ve sus diferencias reales: personas, mesas, privado, clima, peso y más.</p>
       </div>
       <Comparador block="comparador-home" />
@@ -190,8 +205,10 @@ const comparativa = [
   </section>
 
   <!-- 8. CÓMO FUNCIONA -->
-  <section class="section bg-white" aria-labelledby="como-title">
+  <section class="section relative isolate overflow-hidden bg-vx-paper" aria-labelledby="como-title">
+    <div class="bg-grid pointer-events-none -z-10 opacity-60" aria-hidden="true"></div>
     <div class="wrap">
+      <p class="eyebrow mb-3">PROCESO DE RENTA</p>
       <h2 id="como-title" class="text-4xl sm:text-5xl">Rentar tu oficina toma cuatro pasos</h2>
       <div class="mt-10"><Steps /></div>
       <WaButton block="como-funciona" label="Paso 1: escríbenos" class="mt-10" micro />
@@ -199,8 +216,14 @@ const comparativa = [
   </section>
 
   <!-- 9. PARA QUIÉN -->
-  <section class="section bg-vx-black text-white" aria-labelledby="quien-title">
+  <section class="section relative isolate overflow-hidden bg-vx-black text-white" aria-labelledby="quien-title">
+    <div class="hatch-dark pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+    <div class="bg-grid bg-grid-dark pointer-events-none -z-10" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 -bottom-32 -left-32 h-[36rem] w-[36rem]" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true"><Picture src={fotoObra} formats={['avif']} fallbackFormat="webp" widths={[720, 1100]} sizes="100vw" alt="" class="photo-fade opacity-[.14]" loading="lazy" decoding="async" /></div>
+    <div class="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-vx-black via-vx-black/70 to-vx-black" aria-hidden="true"></div>
     <div class="wrap">
+      <p class="eyebrow eyebrow-dark mb-3">CASOS DE USO</p>
       <h2 id="quien-title" class="text-4xl text-white sm:text-5xl">¿Para quién es una oficina móvil?</h2>
       <p class="lead mt-4 !text-white/75">Elige tu caso y te escribimos con lo que necesitas saber.</p>
       <ul class="mt-10 grid gap-4 sm:grid-cols-2">
@@ -221,17 +244,19 @@ const comparativa = [
   </section>
 
   <!-- 10. POR QUÉ VEXON -->
-  <section class="section bg-white" aria-labelledby="porque-title">
+  <section class="section relative isolate overflow-hidden bg-vx-paper" aria-labelledby="porque-title">
+    <div class="bg-glow pointer-events-none -z-10 -right-32 top-0 h-[36rem] w-[36rem]" aria-hidden="true"></div>
     <div class="wrap">
+      <p class="eyebrow mb-3">COMPARATIVO</p>
       <h2 id="porque-title" class="max-w-3xl text-4xl sm:text-5xl">Por qué una oficina Vexon es tu mejor opción</h2>
       <p class="lead mt-4">Frente a las alternativas de siempre en obra.</p>
-      <div class="mt-10 overflow-x-auto rounded-2xl ring-1 ring-vx-line" tabindex="0" role="region" aria-label="Tabla comparativa, desliza para ver todas las columnas">
+      <div class="mt-10 overflow-x-auto rounded-2xl shadow-float ring-1 ring-vx-line" tabindex="0" role="region" aria-label="Tabla comparativa, desliza para ver todas las columnas">
         <table class="w-full min-w-[40rem] text-left">
           <caption class="sr-only">Comparación entre oficina móvil Vexon, caseta construida y contenedor adaptado</caption>
           <thead>
             <tr class="bg-vx-sand font-display">
               <th scope="col" class="w-[28%] px-4 py-4 font-medium text-vx-slate"></th>
-              <th scope="col" class="bg-vx-black px-4 py-4 text-lg font-medium text-white">Oficina móvil Vexon</th>
+              <th scope="col" class="border-t-4 border-vx-orange bg-vx-black px-4 py-4 text-lg font-medium text-white ring-2 ring-vx-orange/70">Oficina móvil Vexon</th>
               <th scope="col" class="px-4 py-4 text-lg font-medium text-vx-black">Caseta construida</th>
               <th scope="col" class="px-4 py-4 text-lg font-medium text-vx-black">Contenedor adaptado</th>
             </tr>
@@ -240,7 +265,7 @@ const comparativa = [
             {comparativa.map((r) => (
               <tr class="border-t border-vx-line">
                 <th scope="row" class="px-4 py-4 font-normal text-vx-slate">{r.k}</th>
-                <td class="bg-vx-orange-soft/60 px-4 py-4 font-display text-vx-black"><span class="inline-flex items-center gap-2"><Icon name="check" class="h-5 w-5 flex-none text-vx-orange" />{r.vx}</span></td>
+                <td class="border-x-2 border-vx-orange/70 bg-vx-orange-soft/60 px-4 py-4 font-display text-vx-black"><span class="inline-flex items-center gap-2"><Icon name="check" class="h-5 w-5 flex-none text-vx-orange" />{r.vx}</span></td>
                 <td class="px-4 py-4 text-vx-slate">{r.caseta}</td>
                 <td class="px-4 py-4 text-vx-slate">{r.cont}</td>
               </tr>
@@ -256,9 +281,10 @@ const comparativa = [
   <FaqList faqs={FAQ_HOME} block="home" bg="sand" intro="Lo que más nos preguntan antes de rentar una oficina móvil." />
 
   <!-- 12. COBERTURA -->
-  <section class="section bg-white" aria-labelledby="cob-title">
+  <section class="section relative isolate overflow-hidden bg-vx-paper" aria-labelledby="cob-title">
     <div class="wrap grid gap-10 lg:grid-cols-2 lg:items-center">
       <div>
+        <p class="eyebrow mb-3">COBERTURA ZMG</p>
         <h2 id="cob-title" class="text-4xl sm:text-5xl">Entregamos en toda la zona metropolitana de Guadalajara</h2>
         <ul class="mt-7 flex flex-wrap gap-2">
           {SITE.areaServed.map((c) => <li class="chip !text-base"><Icon name="pin" class="h-4 w-4 text-vx-orange" />{c}</li>)}
@@ -266,36 +292,19 @@ const comparativa = [
         <p class="mt-6 text-vx-slate">Nuestra base está en {fullAddress}</p>
         <WaButton block="cobertura" label="¿Tu obra está en otro lugar? Confírmalo" class="mt-8" variant="dark" />
       </div>
-      <div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-vx-sand">
-        <div class="hatch absolute inset-0 opacity-30" aria-hidden="true"></div>
-        <svg viewBox="0 0 400 300" class="relative h-full w-full" role="img" aria-label="Municipios atendidos alrededor de Guadalajara">
-          <circle cx="200" cy="150" r="118" fill="none" stroke="#d1d2d0" stroke-dasharray="4 6" />
-          <circle cx="200" cy="150" r="62" fill="none" stroke="#d1d2d0" stroke-dasharray="4 6" />
-          {[
-            { n: 'Zapopan', x: 150, y: 92 },
-            { n: 'Guadalajara', x: 210, y: 140 },
-            { n: 'Tonalá', x: 300, y: 128 },
-            { n: 'Tlaquepaque', x: 236, y: 186 },
-            { n: 'Tlajomulco', x: 150, y: 238 },
-            { n: 'El Salto', x: 290, y: 232 },
-          ].map((p) => (
-            <g>
-              <circle cx={p.x} cy={p.y} r="6" fill="#f1482b" />
-              <text x={p.x + 11} y={p.y + 5} font-family="var(--font-kanit), Arial" font-size="15" fill="#0f0f10">{p.n}</text>
-            </g>
-          ))}
-          <g>
-            <rect x="96" y="54" width="64" height="22" rx="11" fill="#0f0f10" />
-            <text x="128" y="69" text-anchor="middle" font-family="var(--font-kanit), Arial" font-size="11" fill="#fff">Base Vexon</text>
-          </g>
-        </svg>
+      <div class="glass relative isolate aspect-[4/3] overflow-hidden">
+        <div class="bg-grid pointer-events-none -z-10" aria-hidden="true"></div>
+        <ServiceMap variant="panel" />
       </div>
     </div>
   </section>
 
   <!-- 13. CTA FINAL -->
-  <section class="relative overflow-hidden bg-vx-black py-20 text-white sm:py-24" aria-labelledby="final-title" id="cotizar">
-    <div class="hatch-dark absolute inset-0" aria-hidden="true"></div>
+  <section class="relative isolate overflow-hidden bg-vx-black py-20 text-white sm:py-24" aria-labelledby="final-title" id="cotizar">
+    <div class="hatch-dark pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute inset-y-0 right-0 -z-10 w-full lg:w-3/5" aria-hidden="true"><Picture src={fotoPortada} formats={['avif']} fallbackFormat="webp" widths={[720, 1100]} sizes="(min-width: 1024px) 60vw, 100vw" alt="" class="photo-fade opacity-[.22]" loading="lazy" decoding="async" /></div>
+    <div class="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-vx-black via-vx-black/80 to-transparent" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 -bottom-32 -right-32 h-[28rem] w-[28rem]" aria-hidden="true"></div>
     <div class="wrap relative grid gap-12 lg:grid-cols-2">
       <div>
         <h2 id="final-title" class="text-4xl text-white sm:text-6xl">¿Arrancas obra? Tu oficina puede estar lista antes que tu primer colado.</h2>
@@ -315,18 +324,23 @@ const comparativa = [
 
   <!-- 14. BLOG -->
   {posts.length > 0 && (
-    <section class="section bg-white" aria-labelledby="blog-title">
+    <section class="section relative isolate overflow-hidden bg-vx-paper" aria-labelledby="blog-title">
+      <div class="bg-grid pointer-events-none -z-10 opacity-60" aria-hidden="true"></div>
       <div class="wrap">
         <div class="flex flex-wrap items-end justify-between gap-4">
-          <h2 id="blog-title" class="text-4xl sm:text-5xl">Guías para tu obra</h2>
+          <div>
+            <p class="eyebrow mb-3">BLOG</p>
+            <h2 id="blog-title" class="text-4xl sm:text-5xl">Guías para tu obra</h2>
+          </div>
           <a href="/blog" class="font-display text-vx-black underline decoration-vx-orange decoration-2 underline-offset-4">Ver todos los artículos</a>
         </div>
         <ul class="mt-8 grid gap-6 md:grid-cols-3">
           {posts.map((p) => (
-            <li class="card p-6">
+            <li class="card group relative border-t-[3px] border-vx-orange p-6 pb-16 transition-transform duration-200 motion-safe:hover:-translate-y-1 hover:shadow-float">
               <p class="text-sm text-vx-slate">{p.data.category}</p>
               <h3 class="mt-2 text-xl"><a href={`/blog/${p.id}`} class="hover:underline underline-offset-4">{p.data.title}</a></h3>
               <p class="mt-2 text-[0.98rem] text-vx-slate">{p.data.description}</p>
+              <span class="arrow-btn pointer-events-none absolute bottom-4 right-4 text-vx-black" aria-hidden="true"><Icon name="arrow-up-right" class="h-5 w-5" /></span>
             </li>
           ))}
         </ul>
@@ -345,3 +359,11 @@ const comparativa = [
     cards.forEach((c) => (c.hidden = b.dataset.f !== 'all' && c.dataset.dist !== b.dataset.f));
   });
 </script>
+
+<style>
+  #encuentra :global(.rec) { position: relative; }
+  #encuentra :global(.rec)::before {
+    content: ''; position: absolute; top: 0; right: 0; width: 5rem; height: 5rem; border-top-right-radius: 1rem; opacity: .6; pointer-events: none;
+    background-image: repeating-linear-gradient(-58deg, transparent 0 14px, rgb(241 72 43 / .55) 14px 15.5px);
+  }
+</style>
