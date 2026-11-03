@@ -1,0 +1,52 @@
+---
+import { SITE } from '../lib/site';
+
+interface Props {
+  variant?: 'hero' | 'panel';
+}
+
+const { variant = 'panel' } = Astro.props;
+const coordinates: Record<(typeof SITE.areaServed)[number], { x: number; y: number }> = {
+  Zapopan: { x: 360, y: 210 },
+  Guadalajara: { x: 520, y: 300 },
+  Tlaquepaque: { x: 620, y: 370 },
+  Tonalá: { x: 760, y: 330 },
+  'Tlajomulco de Zúñiga': { x: 470, y: 520 },
+  'El Salto': { x: 700, y: 560 },
+};
+const points = SITE.areaServed.map((name) => ({
+  name: name === 'Tlajomulco de Zúñiga' ? 'TLAJOMULCO' : name.toUpperCase(),
+  ...coordinates[name],
+}));
+---
+<svg viewBox="0 0 1200 700" class="pointer-events-none h-full w-full" aria-hidden={variant === 'hero' ? 'true' : undefined} role={variant === 'panel' ? 'img' : undefined} aria-label={variant === 'panel' ? 'Esquema de cobertura: base en Zapopan y municipios atendidos de la zona metropolitana de Guadalajara (no está a escala)' : undefined}>
+  <style>
+    @media (prefers-reduced-motion: reduce) { .pulse-ring { display: none; } }
+  </style>
+  {[90, 190, 300, 420].map((r) => <circle cx="520" cy="300" r={r} fill="none" stroke="#0f0f10" stroke-opacity=".10" stroke-dasharray="2 8" />)}
+  <g stroke="#0f0f10" stroke-opacity=".06">
+    <line x1="0" y1="300" x2="1200" y2="300" />
+    <line x1="520" y1="0" x2="520" y2="700" />
+  </g>
+  {points.map((point) => (
+    <path d={`M 300 130 Q ${(300 + point.x) / 2} ${(130 + point.y) / 2 - 60} ${point.x} ${point.y}`} class="route" fill="none" stroke="#f1482b" stroke-opacity=".55" stroke-width="1.5" />
+  ))}
+  {points.map((point) => (
+    <g>
+      <circle cx={point.x} cy={point.y} r="12" fill="#f1482b" fill-opacity=".12" />
+      <circle cx={point.x} cy={point.y} r="5" fill="#f1482b" />
+    </g>
+  ))}
+  <circle class="pulse-ring" cx="300" cy="130" r="9" fill="none" stroke="#0f0f10" opacity=".5">
+    <animate attributeName="r" values="9;22" dur="2.8s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values=".5;0" dur="2.8s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="300" cy="130" r="7" fill="#0f0f10" />
+  <g font-family="var(--font-mono)" font-size="13" letter-spacing=".08em" fill="#474d54">
+    {variant === 'panel' && <text x="314" y="135">BASE ZAPOPAN</text>}
+    {points.filter((point) => variant === 'panel' || (point.x >= 420 && point.y < 480)).map((point) => (
+      <text x={point.x > 700 ? point.x - 14 : point.x + 14} y={point.y + 5} text-anchor={point.x > 700 ? 'end' : 'start'}>{point.name}</text>
+    ))}
+    {variant === 'panel' && <text x="20" y="680" font-size="11">ESQUEMA NO A ESCALA</text>}
+  </g>
+</svg>

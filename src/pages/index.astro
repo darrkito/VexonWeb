@@ -3,6 +3,7 @@ import { Picture } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
+import ServiceMap from '../components/ServiceMap.astro';
 import WaButton from '../components/WaButton.astro';
 import ModelCard from '../components/ModelCard.astro';
 import Selector from '../components/Selector.astro';
@@ -51,10 +52,14 @@ const comparativa = [
   schema={schema}
 >
   <!-- 1. HERO -->
-  <section class="relative overflow-hidden bg-white" aria-labelledby="hero-title">
+  <section class="relative isolate overflow-hidden bg-vx-paper" aria-labelledby="hero-title">
+    <div class="bg-grid pointer-events-none -z-10" style="mask-image: radial-gradient(70% 60% at 50% 40%, #000 30%, transparent 100%); -webkit-mask-image: radial-gradient(70% 60% at 50% 40%, #000 30%, transparent 100%)" aria-hidden="true"></div>
+    <div class="bg-glow pointer-events-none -z-10 left-1/2 top-[-8rem] h-[34rem] w-[60rem] -translate-x-1/2" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-[62%] opacity-100 lg:block" style="mask-image: linear-gradient(to right, transparent 0%, #000 38%); -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 38%)" aria-hidden="true"><ServiceMap variant="hero" /></div>
+    <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 opacity-40 lg:hidden" style="mask-image: linear-gradient(to bottom, #000 40%, transparent); -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent)" aria-hidden="true"><ServiceMap variant="hero" /></div>
     <div class="wrap grid items-center gap-2 pb-10 pt-3 sm:pt-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-10 lg:pb-16 lg:pt-10">
       <div class="relative z-10 order-2 lg:order-1">
-        <p class="hidden items-center gap-2 rounded-full bg-vx-sand px-3 py-1.5 text-[0.9rem] text-vx-black sm:inline-flex">
+        <p class="hidden items-center gap-2 rounded-full px-3 py-1.5 font-mono text-[.78rem] uppercase tracking-[.1em] text-vx-black ring-1 ring-vx-line sm:inline-flex">
           <span class="h-2 w-2 rounded-full bg-vx-capelton" aria-hidden="true"></span>
           Renta en Guadalajara, Zapopan y la zona metropolitana
         </p>
@@ -71,13 +76,14 @@ const comparativa = [
         </div>
         <p class="microcopy mt-3">Sin compromiso. Te respondemos por WhatsApp en horario de atención.</p>
         <ul class="mt-6 flex flex-wrap gap-2" aria-label="Lo que incluye">
-          <li class="chip"><Icon name="check" class="h-4 w-4 text-vx-orange" /> Solo renta</li>
-          <li class="chip"><Icon name="snow" class="h-4 w-4 text-vx-orange" /> Clima incluido</li>
-          <li class="chip"><Icon name="shield" class="h-4 w-4 text-vx-orange" /> Respaldo de fábrica Capelton</li>
+          <li class="chip shadow-lift backdrop-blur"><Icon name="check" class="h-4 w-4 text-vx-orange" /> Solo renta</li>
+          <li class="chip shadow-lift backdrop-blur"><Icon name="snow" class="h-4 w-4 text-vx-orange" /> Clima incluido</li>
+          <li class="chip shadow-lift backdrop-blur"><Icon name="shield" class="h-4 w-4 text-vx-orange" /> Respaldo de fábrica Capelton</li>
         </ul>
       </div>
       <div class="relative order-1 -mx-4 sm:mx-0 lg:order-2">
         <div class="hatch hatch-drift absolute -right-24 bottom-[12%] left-[18%] top-[8%] rounded-l-[3rem] opacity-70 lg:-right-48" aria-hidden="true"></div>
+        <div class="float relative">
         <Picture
           src={hero.image}
           formats={['avif']} fallbackFormat="webp"
@@ -88,6 +94,8 @@ const comparativa = [
           loading="eager"
           fetchpriority="high"
         />
+        <div class="pointer-events-none absolute inset-x-[10%] bottom-[4%] -z-10 h-6" style="background: radial-gradient(closest-side, rgb(15 15 16 / .22), transparent)" aria-hidden="true"></div>
+        </div>
         <p class="relative mr-4 mt-1 hidden text-right text-sm text-vx-slate sm:mr-0 sm:block">VX-10M: 10 m, 9 personas, 5 mesas</p>
       </div>
     </div>
