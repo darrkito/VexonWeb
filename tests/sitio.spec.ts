@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const paginas = [
-  '/', '/oficinas-moviles', '/oficinas-moviles/vx-3m', '/oficinas-moviles/vx-10p',
+  '/', '/oficinas-moviles', '/oficinas-moviles/vx-3m', '/oficinas-moviles/vx-10p', '/renta-oficina-movil-guadalajara',
   '/soluciones/constructoras', '/soluciones/remodelaciones', '/soluciones/naves-e-industria',
   '/nosotros', '/contacto', '/blog', '/blog/guia-oficinas-moviles-obra-guadalajara', '/aviso-de-privacidad',
 ];

@@ -70,6 +70,7 @@ ${MODELOS.map((m) => `- [${m.code}](${SITE.url}/oficinas-moviles/${m.slug}): ${m
 
 ## Páginas principales
 
+- [Renta de oficina móvil en Guadalajara](${SITE.url}/renta-oficina-movil-guadalajara)
 - [Catálogo y comparador](${SITE.url}/oficinas-moviles)
 - [Soluciones para constructoras](${SITE.url}/soluciones/constructoras)
 - [Soluciones para remodelaciones](${SITE.url}/soluciones/remodelaciones)

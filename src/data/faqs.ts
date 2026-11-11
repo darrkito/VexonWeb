@@ -145,3 +145,13 @@ export const FAQ_CONTACTO: Faq[] = [
     a: 'Escríbenos por WhatsApp y coordinamos fotos, video o una visita según la disponibilidad de unidades.',
   },
 ];
+
+export const FAQ_RENTA: Faq[] = [
+  { q: '¿Qué incluye la renta de una oficina móvil en Guadalajara?', a: 'La oficina se entrega equipada: mesas de trabajo, aire acondicionado, ventanas, iluminación LED, contactos de 127 V, escalera y torres de nivelación. Cada cotización detalla traslado, instalación y recolección para tu caso.' },
+  { q: '¿Por cuánto tiempo puedo rentarla?', a: 'El tiempo de renta depende de tu obra o remodelación. Dinos la fecha de inicio y cuánto estimas que durará, y te confirmamos las condiciones en la cotización por WhatsApp.' },
+  { q: '¿El traslado y la instalación están incluidos?', a: 'La cotización detalla traslado, instalación y recolección para tu caso. Escríbenos con la ubicación de la obra y te confirmamos cada concepto.' },
+  { q: '¿En qué municipios entregan?', a: 'Atendemos Guadalajara, Zapopan, Tlaquepaque, Tonalá, Tlajomulco de Zúñiga y El Salto. Si tu obra está en otro punto de Jalisco, escríbenos por WhatsApp y lo revisamos.' },
+  { q: '¿Cuánto cuesta rentar una oficina móvil?', a: 'El precio depende del modelo, del tiempo de renta y de la ubicación de la obra. Escríbenos por WhatsApp con esos tres datos y te enviamos la cotización sin compromiso.' },
+  { q: '¿Qué necesito en la obra para instalarla?', a: 'Un espacio con acceso para el remolque y una toma eléctrica de 127 V para el clima, las luces y los contactos. Las torres de nivelación compensan desniveles normales de obra.' },
+  { q: '¿Qué pasa al terminar la renta?', a: 'Al terminar tu renta, la recogemos. La oficina se retira sin dejar construcción en tu terreno.' },
+];
