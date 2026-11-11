@@ -30,7 +30,10 @@ jobs:
       - name: Pruebas (SEO, CTAs, accesibilidad, formulario)
         run: pnpm test
       - name: Lighthouse CI (falla si una página baja de 95 en móvil)
-        run: pnpm lhci
+        # ubuntu-latest ya no trae Chrome: Lighthouse usa el Chromium que instaló Playwright.
+        run: |
+          export CHROME_PATH="$(node -e "console.log(require('@playwright/test').chromium.executablePath())")"
+          pnpm lhci
       - uses: actions/upload-artifact@v4
         if: always()
         with:
