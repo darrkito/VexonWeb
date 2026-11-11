@@ -16,6 +16,7 @@ const blogDates = Object.fromEntries(
     return [f.replace(/\.mdx$/, ''), d];
   }),
 );
+/** @type {string | undefined} */
 let siteLastmod;
 try {
   siteLastmod = execSync('git log -1 --format=%cI -- src public', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim() || undefined;
