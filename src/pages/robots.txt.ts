@@ -13,11 +13,13 @@ const aiBots = [
 export const GET: APIRoute = () => {
   const body = [
     'User-agent: *',
+    // Solo el formulario es privado; /api/modelos, /api/faq, /api/blog y /api/openapi.json son para agentes.
+    'Content-Signal: search=yes, ai-input=yes, ai-train=yes',
     'Allow: /',
-    'Disallow: /api/',
+    'Disallow: /api/cotizacion',
     'Disallow: /gracias',
     '',
-    ...aiBots.flatMap((b) => [`User-agent: ${b}`, 'Allow: /', 'Disallow: /api/', '']),
+    ...aiBots.flatMap((b) => [`User-agent: ${b}`, 'Allow: /', 'Disallow: /api/cotizacion', '']),
     `Sitemap: ${SITE.url}/sitemap-index.xml`,
     '',
     `# Resumen para modelos de lenguaje: ${SITE.url}/llms.txt`,

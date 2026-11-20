@@ -115,6 +115,19 @@ const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
       ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((ev) => addEventListener(ev, loadAnalytics, { once: true, passive: true }));
       setTimeout(loadAnalytics, 6000);
     </script>
+    <script is:inline>
+      // WebMCP (navigator.modelContext): detecta la función y no hace nada si el navegador no la trae.
+      // Herramientas reales sobre las mismas rutas públicas que usa el sitio.
+      if (navigator.modelContext && navigator.modelContext.provideContext) {
+        const txt = (v) => ({ content: [{ type: 'text', text: JSON.stringify(v) }] });
+        navigator.modelContext.provideContext({
+          tools: [
+            { name: 'list_models', description: 'Lista los 8 modelos de oficina móvil VX de Vexon (medidas, personas, equipamiento). Vexon no publica precios.', inputSchema: { type: 'object', properties: {} }, execute: async () => txt((await (await fetch('/api/modelos')).json()).modelos) },
+            { name: 'search_site', description: 'Busca en modelos, preguntas frecuentes y blog de Vexon en lenguaje natural.', inputSchema: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'] }, execute: async (i) => txt((await (await fetch('/ask?query=' + encodeURIComponent(String(i.query || '')))).json()).results) },
+          ],
+        });
+      }
+    </script>
     <script>
       import { initUI } from '../lib/ui';
       initUI();

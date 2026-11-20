@@ -1,0 +1,2 @@
+// Alias de /.well-known/mcp/server-card.json en <endpoint>/server-card (la otra ubicación que nombra el borrador SEP-2127).
+export { GET } from '../.well-known/mcp/server-card.json';

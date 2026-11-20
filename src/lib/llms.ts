@@ -79,6 +79,14 @@ ${MODELOS.map((m) => `- [${m.code}](${SITE.url}/oficinas-moviles/${m.slug}): ${m
 - [Contacto](${SITE.url}/contacto)
 - [Blog](${SITE.url}/blog)
 
+## Acceso para agentes
+
+- [Servidor MCP](${SITE.url}/.well-known/mcp/server-card.json) en ${SITE.url}/mcp: herramientas get_models, get_model, recommend_model, search_faq, get_blog_posts, get_business_info y request_quote (enlace de WhatsApp prellenado)
+- [Agente A2A](${SITE.url}/.well-known/agent-card.json) en ${SITE.url}/a2a (A2A 1.0 SendMessage y 0.3 message/send): recomienda modelo y responde preguntas frecuentes
+- [Búsqueda NLWeb /ask](${SITE.url}/ask?query=oficina+movil+para+obra): búsqueda en lenguaje natural sobre modelos, preguntas frecuentes y blog, JSON con objetos schema.org
+- [API REST pública](${SITE.url}/api/openapi.json): /api/modelos, /api/faq, /api/blog
+- Vexon solo renta y no publica precios: la cotización va por WhatsApp.
+
 ## Opcional
 
 - [Catálogo completo en texto](${SITE.url}/llms-full.txt)
