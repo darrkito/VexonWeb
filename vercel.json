@@ -93,40 +93,5 @@
       "destination": "/soluciones/constructoras",
       "permanent": false
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "header",
-          "key": "accept",
-          "value": "(.*text/markdown.*)"
-        }
-      ],
-      "destination": "/llms.txt"
-    },
-    {
-      "source": "/oficinas-moviles",
-      "has": [
-        {
-          "type": "header",
-          "key": "accept",
-          "value": "(.*text/markdown.*)"
-        }
-      ],
-      "destination": "/llms-full.txt"
-    },
-    {
-      "source": "/oficinas-moviles/:slug",
-      "has": [
-        {
-          "type": "header",
-          "key": "accept",
-          "value": "(.*text/markdown.*)"
-        }
-      ],
-      "destination": "/oficinas-moviles/:slug.md"
-    }
   ]
 }
