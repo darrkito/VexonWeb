@@ -24,7 +24,7 @@ try {
 
 // En Vercel se usa su adaptador; en local (o cualquier servidor Node) el adaptador de Node.
 const adapter = process.env.VERCEL
-  ? vercel({ webAnalytics: { enabled: true }, middlewareMode: 'edge' })
+  ? vercel({ webAnalytics: { enabled: true } })
   : node({ mode: 'standalone' });
 
 export default defineConfig({
